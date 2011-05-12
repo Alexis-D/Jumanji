@@ -454,6 +454,7 @@ gboolean cmd_sessionload(int, char**);
 gboolean cmd_sessionsave(int, char**);
 gboolean cmd_sessionswitch(int, char**);
 gboolean cmd_set(int, char**);
+gboolean cmd_shell(int, char**);
 gboolean cmd_stop(int, char**);
 gboolean cmd_tabopen(int, char**);
 gboolean cmd_winopen(int, char**);
@@ -3362,6 +3363,11 @@ cmd_set(int argc, char** argv)
 
   update_status();
   return TRUE;
+}
+
+gboolean
+cmd_shell(int UNUSED(argc), char** argv) {
+  return FALSE; 
 }
 
 gboolean
