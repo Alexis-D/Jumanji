@@ -1,4 +1,5 @@
 * Finish shell implementation
 * Allow mapping of ²
 * Better private mode
+* Improve isc_command_history (up/down command should have the same prefix)
 * Pin tab ?
