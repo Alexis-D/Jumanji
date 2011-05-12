@@ -414,6 +414,7 @@ void sc_run_script(Argument*);
 void sc_scroll(Argument*);
 void sc_search(Argument*);
 void sc_spawn(Argument*);
+void sc_stop(Argument*);
 void sc_toggle_proxy(Argument*);
 void sc_toggle_statusbar(Argument*);
 void sc_toggle_sourcecode(Argument*);
@@ -2177,6 +2178,12 @@ void
 sc_spawn(Argument* argument)
 {
   bcmd_spawn(NULL, argument);
+}
+
+void
+sc_stop(Argument* UNUSED(argument))
+{
+  cmd_stop(0, NULL);
 }
 
 void
