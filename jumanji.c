@@ -419,7 +419,6 @@ void sc_run_script(Argument*);
 void sc_scroll(Argument*);
 void sc_search(Argument*);
 void sc_spawn(Argument*);
-void sc_stop(Argument*);
 void sc_toggle_proxy(Argument*);
 void sc_toggle_statusbar(Argument*);
 void sc_toggle_sourcecode(Argument*);
@@ -465,6 +464,7 @@ Completion* cc_session(char*);
 Completion* cc_set(char*);
 
 /* buffer command declarations */
+void bcmd_back_or_forward(char*, Argument*);
 void bcmd_close_tab(char*, Argument*);
 void bcmd_go_home(char*, Argument*);
 void bcmd_go_parent(char*, Argument*);
@@ -473,6 +473,7 @@ void bcmd_nav_tabs(char*, Argument*);
 void bcmd_paste(char*, Argument*);
 void bcmd_quit(char*, Argument*);
 void bcmd_scroll(char*, Argument*);
+void bcmd_stop(char*, Argument*);
 void bcmd_spawn(char*, Argument*);
 void bcmd_toggle_sourcecode(char*, Argument*);
 void bcmd_zoom(char*, Argument*);
@@ -2186,12 +2187,6 @@ sc_spawn(Argument* argument)
 }
 
 void
-sc_stop(Argument* UNUSED(argument))
-{
-  cmd_stop(0, NULL);
-}
-
-void
 sc_toggle_proxy(Argument* UNUSED(argument))
 {
   static gboolean enable = FALSE;
@@ -3637,11 +3632,34 @@ cc_set(char* input)
   return completion;
 }
 
+void
+bcmd_back_or_forward(char* buffer, Argument* argument)
+{
+  size_t len = strlen(buffer);
+
+  if(len == 0)
+    if(argument->n == BACKWARD)
+      cmd_back(0, NULL);
+    else
+      cmd_forward(0, NULL);
+
+  else {
+    int steps = atoi(g_strndup(buffer, strlen(buffer) - 1));
+    webkit_web_view_go_back_or_forward(GET_CURRENT_TAB(), argument->n == BACKWARD ? -steps : steps);
+  }
+}
+
 /* buffer command implementation */
 void
 bcmd_close_tab(char* UNUSED(buffer), Argument* argument)
 {
   sc_close_tab(argument);
+}
+
+void
+bcmd_stop(char* UNUSED(buffer), Argument* UNUSED(argument))
+{
+  cmd_stop(0, NULL); 
 }
 
 void

@@ -170,10 +170,10 @@ Mouse mouse[] = {
 /* commands */
 Command commands[] = {
   /* command,   abbreviation,   function,            completion,   description  */
-  {"back",      0,              cmd_back,            0,            "Go back in the browser history" },
+  {"back",      "ba",           cmd_back,            0,            "Go back in the browser history" },
   {"bmap",      0,              cmd_bmap,            0,            "Map a buffered command" },
   {"bmark",     "b",            cmd_bookmark,        0,            "Add a bookmark" },
-  {"forward",   "f",            cmd_forward,         0,            "Go forward in the browser history" },
+  {"forward",   "fo",           cmd_forward,         0,            "Go forward in the browser history" },
   {"map",       "m",            cmd_map,             0,            "Map a key sequence" },
   {"open",      "o",            cmd_open,            cc_open,      "Open URI in the current tab" },
   {"plugin",    0,              cmd_plugintype,      0,            "Allow plugin type" },
@@ -197,6 +197,10 @@ Command commands[] = {
 /* buffer commands */
 BufferCommand buffer_commands[] = {
   /* regex,        function,               argument             argument data */
+  {"^gb$",         bcmd_back_or_forward,   { BACKWARD,          NULL } },
+  {"^[0-9]+gb$",   bcmd_back_or_forward,   { BACKWARD,          NULL } },
+  {"^gf$",         bcmd_back_or_forward,   { FORWARD,           NULL } },
+  {"^[0-9]+gf$",   bcmd_back_or_forward,   { FORWARD,           NULL } },
   {"^gh$",         bcmd_go_home,           { 0,                 NULL } },
   {"^gH$",         bcmd_go_home,           { NEW_TAB,           NULL } },
   {"^[0-9]*gu$",   bcmd_go_parent,         { 0,                 NULL } },
@@ -212,6 +216,7 @@ BufferCommand buffer_commands[] = {
   {"^[0-9]+G$",    bcmd_scroll,            { 0,                 NULL } },
   {"^gg$",         bcmd_scroll,            { TOP,               NULL } },
   {"^G$",          bcmd_scroll,            { BOTTOM,            NULL } },
+  {"^c$",          bcmd_stop,              { BOTTOM,            NULL } },
   {"^gf$",         bcmd_toggle_sourcecode, { 0,                 NULL } },
   {"^gF$",         bcmd_toggle_sourcecode, { OPEN_EXTERNAL,     NULL } },
   {"^zI$",         bcmd_zoom,              { ZOOM_IN,           NULL } },
@@ -320,7 +325,6 @@ FunctionName function_names[] = {
   {"script",            sc_run_script,         NULL},
   {"scroll",            sc_scroll,             bcmd_scroll},
   {"search",            sc_search,             NULL},
-  {"stop",              sc_stop,               NULL},
   {"toggle_statusbar",  sc_toggle_statusbar,   NULL},
   {"toggle_sourcecode", sc_toggle_sourcecode,  NULL},
   {"quit",              sc_quit,               bcmd_quit},
