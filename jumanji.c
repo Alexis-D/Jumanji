@@ -2618,54 +2618,74 @@ isc_string_manipulation(Argument* argument)
   int    length = strlen(input);
   int pos       = gtk_editable_get_position(GTK_EDITABLE(Jumanji.UI.inputbar));
 
-  if(argument->n == DELETE_LAST_WORD)
-  {
-    int i = pos - 1;
+  switch(argument->n) {
+    case DELETE_LAST_WORD:
+      {
+        int i = pos - 1;
+    
+        if(!pos)
+        {
+            g_free(input);
+            return;
+        }
+    
+        /* remove trailing spaces */
+        for(; i >= 0 && input[i] == ' '; i--);
+    
+        /* find the beginning of the word */
+        while((i == (pos - 1)) || (((i) > 0) && (input[i] != ' ')
+                && (input[i] != '/') && (input[i] != '.')
+                && (input[i] != '-') && (input[i] != '=')
+                && (input[i] != '&') && (input[i] != '#')
+                && (input[i] != '?')
+                ))
+            i--;
+    
+        gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar),  i+1, pos);
+        gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), i+1);
+      }
+      break;
 
-    if(!pos)
-    {
-      g_free(input);
-      return;
-    }
+    case DELETE_LAST_CHAR:
+    case DELETE_NEXT_CHAR:
+      if((length - 1) <= 0)
+        isc_abort(NULL);
+  
+      gboolean last = argument->n == DELETE_LAST_CHAR;
+  
+      gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar),
+                               last ? pos - 1 : pos, last ? pos : pos + 1);
+      break;
 
-    /* remove trailing spaces */
-    for(; i >= 0 && input[i] == ' '; i--);
+    case DELETE_LINE_START:
+      /* start to 1 to keep ':' or '/' ... */
+      gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar), 1, pos);
+      break;
 
-    /* find the beginning of the word */
-    while((i == (pos - 1)) || (((i) > 0) && (input[i] != ' ')
-          && (input[i] != '/') && (input[i] != '.')
-          && (input[i] != '-') && (input[i] != '=')
-          && (input[i] != '&') && (input[i] != '#')
-          && (input[i] != '?')
-          ))
-      i--;
+    case DELETE_LINE_END:
+      gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar), pos, length);
+      break;
 
-    gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar),  i+1, pos);
-    gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), i+1);
+    case GOTO_START:
+      gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), 1);
+      break;
+
+    case GOTO_END:
+      gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), -1);
+      break;
+
+    case NEXT_CHAR:
+      gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), pos+1);
+      break;
+
+    case PREVIOUS_CHAR:
+      gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), (pos == 0) ? 0 : pos - 1);
+      break;
+    
+    default:
+      fprintf(stderr, "Unknown constant send to isc_string_manipulation.\n");
+      break;
   }
-  else if(argument->n == DELETE_LAST_CHAR || argument->n == DELETE_NEXT_CHAR)
-  {
-    if((length - 1) <= 0)
-      isc_abort(NULL);
-
-    gboolean last = argument->n == DELETE_LAST_CHAR;
-
-    gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar),
-                             last ? pos - 1 : pos, last ? pos : pos + 1);
-  }
-  else if(argument->n == DELETE_LINE_START)
-    /* start to 1 to keep ':' */
-    gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar), 1, pos);
-  else if(argument->n == DELETE_LINE_END)
-    gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar), pos, length);
-  else if(argument->n == GOTO_START)
-    gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), 1);
-  else if(argument->n == GOTO_END)
-    gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), -1);
-  else if(argument->n == NEXT_CHAR)
-    gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), pos+1);
-  else if(argument->n == PREVIOUS_CHAR)
-    gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), (pos == 0) ? 0 : pos - 1);
 
   g_free(input);
 }
