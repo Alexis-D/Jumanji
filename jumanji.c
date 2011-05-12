@@ -125,11 +125,11 @@ typedef struct
 
 typedef struct
 {
-  char*      command;
-  char*      description;
+  char      *command;
+  char      *description;
   int        command_id;
   gboolean   is_group;
-  GtkWidget* row;
+  GtkWidget *row;
 } CompletionRow;
 
 typedef struct
@@ -140,8 +140,8 @@ typedef struct
 
 typedef struct
 {
-  char* name;
-  int argument;
+  char *name;
+  int   argument;
 } ArgumentName;
 
 typedef struct
@@ -155,13 +155,13 @@ typedef struct
 
 typedef struct
 {
-  char* name;
-  int mode;
+  char *name;
+  int   mode;
 } ModeName;
 
 typedef struct
 {
-  char* name;
+  char *name;
   void (*sc)(Argument*);
   void (*bcmd)(char*, Argument*);
 } FunctionName;
@@ -176,16 +176,16 @@ typedef struct
 
 typedef struct
 {
-  char* command;
-  char* abbr;
+  char *command;
+  char *abbr;
   gboolean (*function)(int, char**);
   Completion* (*completion)(char*);
-  char* description;
+  char *description;
 } Command;
 
 typedef struct
 {
-  char* regex;
+  char *regex;
   void (*function)(char*, Argument*);
   Argument argument;
 } BufferCommand;
@@ -225,26 +225,26 @@ typedef struct
 
 typedef struct
 {
-  char* identifier;
+  char *identifier;
   unsigned int key;
 } GDKKey;
 
 typedef struct
 {
-  char* name;
-  void* variable;
-  char* webkitvar;
+  char *name;
+  void *variable;
+  char *webkitvar;
   char  type;
   gboolean init_only;
   gboolean reload;
   gboolean webkitview;
-  char* description;
+  char *description;
 } Setting;
 
 struct SEList
 {
-  char* name;
-  char* uri;
+  char *name;
+  char *uri;
   struct SEList *next;
 };
 
@@ -252,8 +252,8 @@ typedef struct SEList SearchEngineList;
 
 struct SScript
 {
-  char* path;
-  char* content;
+  char *path;
+  char *content;
   struct SScript *next;
 };
 
@@ -346,7 +346,7 @@ struct
 
   struct
   {
-    SoupSession* session;
+    SoupSession *session;
   } Soup;
 
   struct
@@ -528,10 +528,10 @@ add_marker(int id)
   int ti     = gtk_notebook_get_current_page(Jumanji.UI.view);
 
   /* search if entry already exists */
-  GList* list;
+  GList *list;
   for(list = Jumanji.Global.markers; list; list = g_list_next(list))
   {
-    Marker* marker = (Marker*) list->data;
+    Marker *marker = (Marker*) list->data;
 
     if(marker->id == id)
     {
@@ -544,7 +544,7 @@ add_marker(int id)
   }
 
   /* add new marker */
-  Marker* marker = malloc(sizeof(Marker));
+  Marker *marker = malloc(sizeof(Marker));
   marker->id          = id;
   marker->tab_id      = ti;
   marker->vadjustment = va;
@@ -579,7 +579,7 @@ auto_save(gpointer UNUSED(data))
 void
 change_mode(int mode)
 {
-  char* mode_text = NULL;
+  char *mode_text = NULL;
 
   switch(mode)
   {
@@ -617,14 +617,14 @@ change_mode(int mode)
 void
 close_tab(int tab_id)
 {
-  GtkWidget* tab = GTK_WIDGET(GET_NTH_TAB_WIDGET(tab_id));
+  GtkWidget *tab = GTK_WIDGET(GET_NTH_TAB_WIDGET(tab_id));
 
   /* remove markers for this tab
    * and update the others */
-  GList* list = Jumanji.Global.markers;
+  GList *list = Jumanji.Global.markers;
   while (list) {
-    Marker* marker = (Marker*) list->data;
-    GList* next_marker = g_list_next(list);
+    Marker *marker = (Marker*) list->data;
+    GList *next_marker = g_list_next(list);
 
     if (marker->tab_id == tab_id) {
       Jumanji.Global.markers = g_list_delete_link(Jumanji.Global.markers, list);
@@ -649,7 +649,7 @@ close_tab(int tab_id)
 }
 
 GtkWidget*
-create_tab(char* uri, gboolean background)
+create_tab(char *uri, gboolean background)
 {
   if(!uri)
     return NULL;
@@ -667,13 +667,13 @@ create_tab(char* uri, gboolean background)
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(tab), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   else
   {
-    WebKitWebFrame* mf = webkit_web_view_get_main_frame(WEBKIT_WEB_VIEW(wv));
+    WebKitWebFrame *mf = webkit_web_view_get_main_frame(WEBKIT_WEB_VIEW(wv));
     g_signal_connect(G_OBJECT(mf),  "scrollbars-policy-changed", G_CALLBACK(cb_blank), NULL);
 
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(tab), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
   }
 
-  GtkAdjustment* adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(tab));
+  GtkAdjustment *adjustment = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(tab));
 
   /* connect webview callbacks */
   g_signal_connect(G_OBJECT(wv),  "console-message",                      G_CALLBACK(cb_wv_console),                  NULL);
@@ -701,7 +701,7 @@ create_tab(char* uri, gboolean background)
   webkit_web_view_set_settings(WEBKIT_WEB_VIEW(wv), webkit_web_settings_copy(Jumanji.Global.browser_settings));
 
   /* set web inspector */
-  WebKitWebInspector* web_inspector = webkit_web_view_get_inspector(WEBKIT_WEB_VIEW(wv));
+  WebKitWebInspector *web_inspector = webkit_web_view_get_inspector(WEBKIT_WEB_VIEW(wv));
   g_signal_connect(G_OBJECT(web_inspector), "inspect-web-view", G_CALLBACK(cb_wv_inspector_view), NULL);
 
   gtk_container_add(GTK_CONTAINER(tab), wv);
@@ -758,15 +758,15 @@ eval_marker(int id)
   if((id < 0x30) || (id > 0x7A))
     return;
 
-  GList* list;
+  GList *list;
   for(list = Jumanji.Global.markers; list; list = g_list_next(list))
   {
-    Marker* marker = (Marker*) list->data;
+    Marker *marker = (Marker*) list->data;
 
     if(marker->id == id)
     {
       gtk_notebook_set_current_page(Jumanji.UI.view, marker->tab_id);
-      GtkAdjustment* adjustment;
+      GtkAdjustment *adjustment;
       adjustment = gtk_scrolled_window_get_vadjustment(GET_CURRENT_TAB_WIDGET());
       gtk_adjustment_set_value(adjustment, marker->vadjustment);
       adjustment = gtk_scrolled_window_get_hadjustment(GET_CURRENT_TAB_WIDGET());
@@ -782,14 +782,14 @@ void
 init_data()
 {
   /* read bookmarks */
-  char* bookmark_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_BOOKMARKS, NULL);
+  char *bookmark_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_BOOKMARKS, NULL);
 
   if(!bookmark_file)
     return;
 
   if(g_file_test(bookmark_file, G_FILE_TEST_IS_REGULAR))
   {
-    char* content = NULL;
+    char *content = NULL;
 
     if(g_file_get_contents(bookmark_file, &content, NULL, NULL))
     {
@@ -813,14 +813,14 @@ init_data()
   g_free(bookmark_file);
 
   /* read history */
-  char* history_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_HISTORY, NULL);
+  char *history_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_HISTORY, NULL);
 
   if(!history_file)
     return;
 
   if(g_file_test(history_file, G_FILE_TEST_IS_REGULAR))
   {
-    char* content = NULL;
+    char *content = NULL;
 
     if(g_file_get_contents(history_file, &content, NULL, NULL))
     {
@@ -846,14 +846,14 @@ init_data()
   g_free(history_file);
 
   /* read sessions */
-  gchar* sessions_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_SESSIONS, NULL);
+  gchar *sessions_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_SESSIONS, NULL);
 
   if(!sessions_file)
     return;
 
   if(g_file_test(sessions_file, G_FILE_TEST_IS_REGULAR))
   {
-    char* content = NULL;
+    char *content = NULL;
 
     if(g_file_get_contents(sessions_file, &content, NULL, NULL))
     {
@@ -865,7 +865,7 @@ init_data()
         if(!strlen(lines[i]) || !strlen(lines[i+1]))
           continue;
 
-        Session* se = malloc(sizeof(Session));
+        Session *se = malloc(sizeof(Session));
         se->name = lines[i];
         se->uris = lines[i+1];
 
@@ -880,7 +880,7 @@ init_data()
   g_free(sessions_file);
 
   /* load cookies */
-  char* cookie_file        = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_COOKIES, NULL);
+  char *cookie_file        = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_COOKIES, NULL);
   SoupCookieJar *cookiejar = soup_cookie_jar_text_new(cookie_file, FALSE);
 
   soup_session_add_feature(Jumanji.Soup.session, (SoupSessionFeature*) cookiejar);
@@ -900,8 +900,8 @@ void
 init_keylist()
 {
   /* init shortcuts */
-  ShortcutList* e = NULL;
-  ShortcutList* p = NULL;
+  ShortcutList *e = NULL;
+  ShortcutList *p = NULL;
 
   for(unsigned int i = 0; i < LENGTH(shortcuts); i++)
   {
@@ -997,10 +997,10 @@ init_settings()
   /* apply user agent */
   if(!user_agent && browser_name)
   {
-    char* current_user_agent = NULL;
+    char *current_user_agent = NULL;
     g_object_get(G_OBJECT(Jumanji.Global.browser_settings), "user-agent", &current_user_agent, NULL);
 
-    char* new_user_agent = g_strconcat(current_user_agent, " ", browser_name, NULL);
+    char *new_user_agent = g_strconcat(current_user_agent, " ", browser_name, NULL);
     g_object_set(G_OBJECT(Jumanji.Global.browser_settings), "user-agent", new_user_agent, NULL);
     g_free(new_user_agent);
   }
@@ -1017,7 +1017,7 @@ load_all_scripts()
 
   if(!ls)
   {
-    ScriptList* sl = Jumanji.Global.scripts;
+    ScriptList *sl = Jumanji.Global.scripts;
     while(sl)
     {
       run_script(sl->content, NULL, NULL);
@@ -1130,15 +1130,15 @@ kp_convert(int keyval)
   }
 }
 
-void notify(int level, char* message)
+void notify(int level, char *message)
 {
   if(!Jumanji.Global.init_ui)
   {
     if(message)
     {
-      /* print error message to stdout while the ui has not been loaded */
-      char* dmessage = g_strconcat("jumanjirc: ", message, NULL);
-      printf("%s\n", dmessage);
+      /* print error message to stderr while the ui has not been loaded */
+      char *dmessage = g_strconcat("jumanjirc: ", message, NULL);
+      fprintf(stderr, "%s\n", dmessage);
       g_free(dmessage);
     }
 
@@ -1203,7 +1203,7 @@ init_jumanji()
 }
 
 void
-new_window(char* uri)
+new_window(char *uri)
 {
   if(!uri)
     return;
@@ -1213,7 +1213,7 @@ new_window(char* uri)
     uri = " ";
   }
 
-  char* nargv[3];
+  char *nargv[3];
   if(Jumanji.UI.embed)
   {
     create_tab(uri, FALSE);
@@ -1237,23 +1237,23 @@ out_of_memory()
 }
 
 void
-open_uri(WebKitWebView* web_view, char* uri)
+open_uri(WebKitWebView *web_view, char *uri)
 {
   if(!uri)
     return;
 
   while (*uri == ' ')
-    uri++;
+    ++uri;
 
-  gchar* new_uri = NULL;
+  gchar *new_uri = NULL;
 
   /* multiple argument given */
-  char* uri_first_space = strchr(uri, ' ');
+  char *uri_first_space = strchr(uri, ' ');
   if(uri_first_space)
   {
     unsigned int first_arg_length = uri_first_space - uri;
 
-    SearchEngineList* se = Jumanji.Global.search_engines;
+    SearchEngineList *se = Jumanji.Global.search_engines;
     while(se)
     {
       if(strlen(se->name) == first_arg_length && !strncmp(uri, se->name, first_arg_length))
@@ -1286,7 +1286,7 @@ open_uri(WebKitWebView* web_view, char* uri)
         /* we change all the space with '+'
          * -2 for the '%s'
          */
-        char* new_uri_it = new_uri + strlen(se->uri) - 2;
+        char *new_uri_it = new_uri + strlen(se->uri) - 2;
 
         while(*new_uri_it)
         {
@@ -1301,15 +1301,15 @@ open_uri(WebKitWebView* web_view, char* uri)
         /* there is 0 search engine (a very rare case...) */
         new_uri = g_strconcat("http://", uri, NULL);
 
-        char* nu_first_space;
+        char *nu_first_space;
 
         /* we fill ' ' with '%20' */
         while ((nu_first_space = strchr(new_uri, ' ')))
         {
           /* we break new_uri at the first ' ' */
           *nu_first_space = '\0';
-          char* nu_first_part = new_uri;
-          char* nu_second_part = nu_first_space + 1;
+          char *nu_first_part = new_uri;
+          char *nu_second_part = nu_first_space + 1;
 
           new_uri = g_strconcat(nu_first_part, "%20", nu_second_part, NULL);
 
@@ -1348,7 +1348,7 @@ open_uri(WebKitWebView* web_view, char* uri)
         new_uri = g_strdup_printf(Jumanji.Global.search_engines->uri, uri);
 
         /* -2 for the '%s' */
-        gchar* searchitem = new_uri + strlen(Jumanji.Global.search_engines->uri) - 2;
+        gchar *searchitem = new_uri + strlen(Jumanji.Global.search_engines->uri) - 2;
 
         while(*searchitem)
         {
@@ -1371,7 +1371,7 @@ open_uri(WebKitWebView* web_view, char* uri)
   if(!private_browsing)
   {
     /* we verify if the new_uri is already present in the list*/
-    GList* l = g_list_find_custom(Jumanji.Global.history, new_uri, (GCompareFunc)strcmp);
+    GList *l = g_list_find_custom(Jumanji.Global.history, new_uri, (GCompareFunc)strcmp);
     if (l)
     {
       /* new_uri is already present : new move it to the end of the list */
@@ -1398,7 +1398,7 @@ update_status()
   update_uri();
 
   /* update title */
-  const gchar* title = webkit_web_view_get_title(GET_CURRENT_TAB());
+  const gchar *title = webkit_web_view_get_title(GET_CURRENT_TAB());
   if(title)
     gtk_window_set_title(GTK_WINDOW(Jumanji.UI.window), title);
   else
@@ -1408,7 +1408,7 @@ update_status()
   int current_tab     = gtk_notebook_get_current_page(Jumanji.UI.view);
   int number_of_tabs  = gtk_notebook_get_n_pages(Jumanji.UI.view);
 
-  gchar* tabs = g_strdup_printf("[%d/%d]", current_tab + 1, number_of_tabs);
+  gchar *tabs = g_strdup_printf("[%d/%d]", current_tab + 1, number_of_tabs);
   gtk_label_set_text((GtkLabel*) Jumanji.Statusbar.tabs, tabs);
   g_free(tabs);
 
@@ -1416,7 +1416,7 @@ update_status()
   int tc = 0;
   for(tc = 0; tc < number_of_tabs; tc++)
   {
-    GtkWidget* tab       = GTK_WIDGET(GET_NTH_TAB_WIDGET(tc));
+    GtkWidget *tab       = GTK_WIDGET(GET_NTH_TAB_WIDGET(tc));
     GtkWidget *tev_box   = GTK_WIDGET(g_object_get_data(G_OBJECT(tab), "tab"));
     GtkWidget *tab_label = GTK_WIDGET(g_object_get_data(G_OBJECT(tab), "label"));
 
@@ -1431,9 +1431,9 @@ update_status()
       gtk_widget_modify_fg(GTK_WIDGET(tab_label), GTK_STATE_NORMAL, &(Jumanji.Style.tabbar_fg));
     }
 
-    const gchar* tab_title = webkit_web_view_get_title(GET_WEBVIEW(tab));
+    const gchar *tab_title = webkit_web_view_get_title(GET_WEBVIEW(tab));
     int progress = webkit_web_view_get_progress(GET_WEBVIEW(tab)) * 100;
-    gchar* n_tab_title = g_strdup_printf("%d | %s", tc + 1, tab_title ? tab_title : ((progress == 100) ? "Loading..." : "(Untitled)"));
+    gchar *n_tab_title = g_strdup_printf("%d | %s", tc + 1, tab_title ? tab_title : ((progress == 100) ? "Loading..." : "(Untitled)"));
     gtk_label_set_text((GtkLabel*) tab_label, n_tab_title);
     g_free(n_tab_title);
   }
@@ -1444,14 +1444,14 @@ update_status()
 void
 update_uri()
 {
-  gchar* link  = (gchar*) webkit_web_view_get_uri(GET_CURRENT_TAB());
+  gchar *link  = (gchar*) webkit_web_view_get_uri(GET_CURRENT_TAB());
   int progress = webkit_web_view_get_progress(GET_CURRENT_TAB()) * 100;
-  gchar* uri   = (progress != 100 && progress != 0) ? g_strdup_printf("Loading... %s (%d%%)", link ? link : "", progress) :
+  gchar *uri   = (progress != 100 && progress != 0) ? g_strdup_printf("Loading... %s (%d%%)", link ? link : "", progress) :
                  (link ? g_strdup(link) : NULL);
 
   /* check for https */
-  GdkColor* fg;
-  GdkColor* bg;
+  GdkColor *fg;
+  GdkColor *bg;
 
   gboolean ssl = link ? g_str_has_prefix(link, "https://") : FALSE;
   if(ssl)
@@ -1477,7 +1477,7 @@ update_uri()
     uri = g_strdup("[No name]");
   else
   {
-    GString* navigation = g_string_new("");
+    GString *navigation = g_string_new("");
 
     if(webkit_web_view_can_go_back(GET_CURRENT_TAB()))
       g_string_append_c(navigation, '+');
@@ -1486,7 +1486,7 @@ update_uri()
 
     if(navigation->len > 0)
     {
-      char* new_uri = g_strconcat(uri, " [", navigation->str, "]", NULL);
+      char *new_uri = g_strconcat(uri, " [", navigation->str, "]", NULL);
       g_free(uri);
       uri = new_uri;
     }
@@ -1504,12 +1504,12 @@ update_position()
   if (gtk_notebook_get_current_page(Jumanji.UI.view) == -1)
     return;
 
-  GtkAdjustment* adjustment = gtk_scrolled_window_get_vadjustment(GET_CURRENT_TAB_WIDGET());
+  GtkAdjustment *adjustment = gtk_scrolled_window_get_vadjustment(GET_CURRENT_TAB_WIDGET());
   gdouble view_size         = gtk_adjustment_get_page_size(adjustment);
   gdouble value             = gtk_adjustment_get_value(adjustment);
   gdouble max               = gtk_adjustment_get_upper(adjustment) - view_size;
 
-  gchar* position;
+  gchar *position;
   if(max == 0)
     position = g_strdup("All");
   else if(value == max)
@@ -1526,14 +1526,14 @@ update_position()
 void
 read_configuration()
 {
-  char* jumanjirc = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_RC, NULL);
+  char *jumanjirc = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_RC, NULL);
 
   if(!jumanjirc)
     return;
 
   if(g_file_test(jumanjirc, G_FILE_TEST_IS_REGULAR))
   {
-    char* content = NULL;
+    char *content = NULL;
 
     if(g_file_get_contents(jumanjirc, &content, NULL, NULL))
     {
@@ -1571,7 +1571,7 @@ read_configuration()
 char*
 read_file(const char* path)
 {
-  char* content = NULL;
+  char *content = NULL;
 
   /* specify path max */
   size_t pm;
@@ -1584,14 +1584,14 @@ read_file(const char* path)
 #endif
 
   /* get filename */
-  char* npath;
+  char *npath;
 
   if(path[0] == '~')
     npath = g_build_filename(g_get_home_dir(), path + 1, NULL);
   else
     npath = g_strdup(path);
 
-  char* file = (char*) calloc(sizeof(char), pm);
+  char *file = (char*) calloc(sizeof(char), pm);
   if(!file || !realpath(npath, file))
   {
     if(file)
@@ -1618,7 +1618,7 @@ reference_to_string(JSContextRef context, JSValueRef reference)
 
   JSStringRef ref_st = JSValueToStringCopy(context, reference, NULL);
   size_t      length = JSStringGetMaximumUTF8CStringSize(ref_st);
-  gchar*      string = g_new(gchar, length);
+  gchar      *string = g_new(gchar, length);
   JSStringGetUTF8CString(ref_st, string, length);
   JSStringRelease(ref_st);
 
@@ -1626,7 +1626,7 @@ reference_to_string(JSContextRef context, JSValueRef reference)
 }
 
 void
-run_script(char* script, char** value, char** error)
+run_script(char *script, char **value, char **error)
 {
   if(!script)
     return;
@@ -1658,7 +1658,7 @@ run_script(char* script, char** value, char** error)
 }
 
 void
-set_completion_row_color(GtkBox* results, int mode, int id)
+set_completion_row_color(GtkBox *results, int mode, int id)
 {
   GtkEventBox *row   = (GtkEventBox*) g_list_nth_data(gtk_container_get_children(GTK_CONTAINER(results)), id);
 
@@ -1684,7 +1684,7 @@ set_completion_row_color(GtkBox* results, int mode, int id)
 }
 
 void
-switch_view(GtkWidget* UNUSED(widget))
+switch_view(GtkWidget *UNUSED(widget))
 {
   /*GtkWidget* child = gtk_bin_get_child(GTK_BIN(Jumanji.UI.viewport));*/
   /*if(child)*/
@@ -1697,7 +1697,7 @@ switch_view(GtkWidget* UNUSED(widget))
 }
 
 GtkEventBox*
-create_completion_row(GtkBox* results, char* command, char* description, gboolean group)
+create_completion_row(GtkBox *results, char *command, char *description, gboolean group)
 {
   GtkBox      *col = GTK_BOX(gtk_hbox_new(FALSE, 0));
   GtkEventBox *row = GTK_EVENT_BOX(gtk_event_box_new());
@@ -1765,9 +1765,9 @@ completion_init()
 }
 
 CompletionGroup*
-completion_group_create(char* name)
+completion_group_create(char *name)
 {
-  CompletionGroup* group = malloc(sizeof(CompletionGroup));
+  CompletionGroup *group = malloc(sizeof(CompletionGroup));
   if(!group)
     out_of_memory();
 
@@ -1779,9 +1779,9 @@ completion_group_create(char* name)
 }
 
 void
-completion_add_group(Completion* completion, CompletionGroup* group)
+completion_add_group(Completion *completion, CompletionGroup *group)
 {
-  CompletionGroup* cg = completion->groups;
+  CompletionGroup *cg = completion->groups;
 
   while(cg && cg->next)
     cg = cg->next;
@@ -1792,9 +1792,9 @@ completion_add_group(Completion* completion, CompletionGroup* group)
     completion->groups = group;
 }
 
-void completion_free(Completion* completion)
+void completion_free(Completion *completion)
 {
-  CompletionGroup* group = completion->groups;
+  CompletionGroup *group = completion->groups;
   CompletionElement *element;
 
   while(group)
@@ -1802,7 +1802,7 @@ void completion_free(Completion* completion)
     element = group->elements;
     while(element)
     {
-      CompletionElement* ne = element->next;
+      CompletionElement *ne = element->next;
       free(element);
       element = ne;
     }
@@ -1813,14 +1813,14 @@ void completion_free(Completion* completion)
   }
 }
 
-void completion_group_add_element(CompletionGroup* group, char* name, char* description)
+void completion_group_add_element(CompletionGroup *group, char *name, char *description)
 {
-  CompletionElement* el = group->elements;
+  CompletionElement *el = group->elements;
 
   while(el && el->next)
     el = el->next;
 
-  CompletionElement* new_element = malloc(sizeof(CompletionElement));
+  CompletionElement *new_element = malloc(sizeof(CompletionElement));
   if(!new_element)
     out_of_memory();
 
@@ -1836,7 +1836,7 @@ void completion_group_add_element(CompletionGroup* group, char* name, char* desc
 
 /* shortcut implementation */
 void
-sc_abort(Argument* UNUSED(argument))
+sc_abort(Argument *UNUSED(argument))
 {
   /* Clear buffer */
   if(Jumanji.Global.buffer)
@@ -1847,7 +1847,7 @@ sc_abort(Argument* UNUSED(argument))
   }
 
   /* Clear hints */
-  char* cmd = "clear()";
+  char *cmd = "clear()";
   run_script(cmd, NULL, NULL);
 
   /* Stop loading website */
@@ -1867,7 +1867,7 @@ sc_abort(Argument* UNUSED(argument))
 }
 
 void
-sc_change_buffer(Argument* argument)
+sc_change_buffer(Argument *argument)
 {
   if(!Jumanji.Global.buffer)
     return;
@@ -1884,7 +1884,7 @@ sc_change_buffer(Argument* argument)
     }
     else
     {
-      GString* temp = g_string_new_len(Jumanji.Global.buffer->str, buffer_length - 1);
+      GString *temp = g_string_new_len(Jumanji.Global.buffer->str, buffer_length - 1);
       g_string_free(Jumanji.Global.buffer, TRUE);
       Jumanji.Global.buffer = temp;
       gtk_label_set_text((GtkLabel*) Jumanji.Statusbar.buffer, Jumanji.Global.buffer->str);
@@ -1899,25 +1899,25 @@ sc_change_buffer(Argument* argument)
 }
 
 void
-sc_change_mode(Argument* argument)
+sc_change_mode(Argument *argument)
 {
   if(argument)
     change_mode(argument->n);
 }
 
 void
-sc_close_tab(Argument* UNUSED(argument))
+sc_close_tab(Argument *UNUSED(argument))
 {
   int current_tab = gtk_notebook_get_current_page(Jumanji.UI.view);
   close_tab(current_tab);
 }
 
 void
-sc_focus_inputbar(Argument* argument)
+sc_focus_inputbar(Argument *argument)
 {
   if(argument->data)
   {
-    char* data = argument->data;
+    char *data = argument->data;
 
     if(argument->n == APPEND_URL)
       data = g_strdup_printf("%s%s", data, webkit_web_view_get_uri(GET_CURRENT_TAB()));
@@ -1928,7 +1928,7 @@ sc_focus_inputbar(Argument* argument)
     g_free(data);
 
     /* we save the X clipboard that will be clear by "grab_focus" */
-    gchar* x_clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
+    gchar *x_clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
 
     gtk_widget_grab_focus(GTK_WIDGET(Jumanji.UI.inputbar));
     gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), -1);
@@ -1947,7 +1947,7 @@ sc_focus_inputbar(Argument* argument)
 }
 
 void
-sc_follow_link(Argument* argument)
+sc_follow_link(Argument *argument)
 {
   static gboolean follow_links = FALSE;
   static int      open_mode    = -1;
@@ -1966,8 +1966,8 @@ sc_follow_link(Argument* argument)
     return;
   }
 
-  char* value = NULL;
-  char* cmd   = NULL;
+  char *value = NULL;
+  char *cmd   = NULL;
 
   if (argument && argument->n == 10)
     cmd = g_strdup("get_active()");
@@ -1995,7 +1995,7 @@ sc_follow_link(Argument* argument)
 }
 
 void
-sc_nav_history(Argument* argument)
+sc_nav_history(Argument *argument)
 {
   if(argument->n == NEXT)
     webkit_web_view_go_forward(GET_CURRENT_TAB());
@@ -2004,15 +2004,15 @@ sc_nav_history(Argument* argument)
 }
 
 void
-sc_nav_tabs(Argument* argument)
+sc_nav_tabs(Argument *argument)
 {
   bcmd_nav_tabs(NULL, argument);
 }
 
 void
-sc_paste(Argument* argument)
+sc_paste(Argument *argument)
 {
-  gchar* text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
+  gchar *text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
 
   if(argument->n == NEW_TAB)
     create_tab(text, FALSE);
@@ -2023,7 +2023,7 @@ sc_paste(Argument* argument)
 }
 
 void
-sc_reload(Argument* argument)
+sc_reload(Argument *argument)
 {
   if(argument->n == BYPASS_CACHE)
     webkit_web_view_reload_bypass_cache(GET_CURRENT_TAB());
@@ -2032,7 +2032,7 @@ sc_reload(Argument* argument)
 }
 
 void
-sc_reopen(Argument* argument)
+sc_reopen(Argument *argument)
 {
   GList *last_closed = g_list_first(Jumanji.Global.last_closed);
 
@@ -2047,16 +2047,16 @@ sc_reopen(Argument* argument)
 }
 
 void
-sc_run_script(Argument* argument)
+sc_run_script(Argument *argument)
 {
   if(argument->data)
     run_script(argument->data, NULL, NULL);
 }
 
 void
-sc_scroll(Argument* argument)
+sc_scroll(Argument *argument)
 {
-  GtkAdjustment* adjustment;
+  GtkAdjustment *adjustment;
 
   if( (argument->n == LEFT) || (argument->n == RIGHT) || (argument->n == LEFT_MAX) || (argument->n == RIGHT_MAX) )
     adjustment = gtk_scrolled_window_get_hadjustment(GET_CURRENT_TAB_WIDGET());
@@ -2086,29 +2086,29 @@ sc_scroll(Argument* argument)
 }
 
 void
-sc_search(Argument* argument)
+sc_search(Argument *argument)
 {
   search_and_highlight(argument);
 }
 
 gboolean
-sessionsave(char* session_name)
+sessionsave(char *session_name)
 {
-  GString* session_uris = g_string_new("");
+  GString *session_uris = g_string_new("");
 
   for (int i = 0; i < gtk_notebook_get_n_pages(Jumanji.UI.view); i++)
   {
-    gchar* tab_uri_t = (gchar*) webkit_web_view_get_uri(GET_NTH_TAB(i));
-    gchar* tab_uri   = g_strconcat(tab_uri_t, " ", NULL);
+    gchar *tab_uri_t = (gchar*) webkit_web_view_get_uri(GET_NTH_TAB(i));
+    gchar *tab_uri   = g_strconcat(tab_uri_t, " ", NULL);
     session_uris     = g_string_append(session_uris, tab_uri);
 
     g_free(tab_uri);
   }
 
-  GList* se_list = Jumanji.Global.sessions;
+  GList *se_list = Jumanji.Global.sessions;
   while(se_list)
   {
-    Session* se = se_list->data;
+    Session *se = se_list->data;
 
     if(g_strcmp0(se->name, session_name) == 0)
     {
@@ -2124,7 +2124,7 @@ sessionsave(char* session_name)
   /* if there was no session with name == session_name */
   if(!se_list)
   {
-    Session* se = malloc(sizeof(Session));
+    Session *se = malloc(sizeof(Session));
     se->name = g_strdup(session_name);
     se->uris = session_uris->str;
 
@@ -2138,15 +2138,15 @@ sessionsave(char* session_name)
 }
 
 gboolean
-sessionswitch(char* session_name)
+sessionswitch(char *session_name)
 {
   // search for session
-  gchar** se_uris = NULL;
+  gchar **se_uris = NULL;
 
-  GList* se_list = Jumanji.Global.sessions;
+  GList *se_list = Jumanji.Global.sessions;
   while(se_list)
   {
-    Session* se = se_list->data;
+    Session *se = se_list->data;
 
     if(g_strcmp0(se->name, session_name) == 0)
     {
@@ -2170,12 +2170,12 @@ sessionswitch(char* session_name)
    * and attached informations */
 
   // remove all markers
-  GList* list = Jumanji.Global.markers;
+  GList *list = Jumanji.Global.markers;
   while(list)
   {
-    GList* next_marker = g_list_next(list);
+    GList *next_marker = g_list_next(list);
 
-    Marker* marker = (Marker*) list->data;
+    Marker *marker = (Marker*) list->data;
     Jumanji.Global.markers = g_list_delete_link(Jumanji.Global.markers, list);
     free(marker);
 
@@ -2186,7 +2186,7 @@ sessionswitch(char* session_name)
    * without updating the status bar */
   for (int i = gtk_notebook_get_n_pages(Jumanji.UI.view) - 1; i != -1; --i)
   {
-    GtkWidget* tab = GTK_WIDGET(GET_NTH_TAB_WIDGET(i));
+    GtkWidget *tab = GTK_WIDGET(GET_NTH_TAB_WIDGET(i));
 
     gtk_container_remove(GTK_CONTAINER(Jumanji.UI.tabbar), GTK_WIDGET(g_object_get_data(G_OBJECT(tab), "tab")));
 
@@ -2202,16 +2202,16 @@ sessionswitch(char* session_name)
 }
 
 gboolean
-sessionload(char* session_name)
+sessionload(char *session_name)
 {
-  GList* se_list = Jumanji.Global.sessions;
+  GList *se_list = Jumanji.Global.sessions;
   while(se_list)
   {
-    Session* se = se_list->data;
+    Session *se = se_list->data;
 
     if(g_strcmp0(se->name, session_name) == 0)
     {
-      gchar** uris = g_strsplit(se->uris, " ", -1);
+      gchar **uris = g_strsplit(se->uris, " ", -1);
       int     n    = g_strv_length(uris) - 1;
 
       if(n <= 0)
@@ -2231,13 +2231,13 @@ sessionload(char* session_name)
 }
 
 void
-sc_spawn(Argument* argument)
+sc_spawn(Argument *argument)
 {
   bcmd_spawn(NULL, argument);
 }
 
 void
-sc_toggle_proxy(Argument* UNUSED(argument))
+sc_toggle_proxy(Argument *UNUSED(argument))
 {
   static gboolean enable = FALSE;
 
@@ -2250,7 +2250,7 @@ sc_toggle_proxy(Argument* UNUSED(argument))
   }
   else
   {
-    char* purl = (proxy) ? proxy : (char*) g_getenv("http_proxy");
+    char *purl = (proxy) ? proxy : (char*) g_getenv("http_proxy");
     if(!purl)
     {
       if(Jumanji.Global.init_ui)
@@ -2258,8 +2258,8 @@ sc_toggle_proxy(Argument* UNUSED(argument))
       return;
     }
 
-    char* uri = strstr(purl, "://") ? g_strdup(purl) : g_strconcat("http://", purl, NULL);
-    SoupURI* proxy_uri = soup_uri_new(uri);
+    char *uri = strstr(purl, "://") ? g_strdup(purl) : g_strconcat("http://", purl, NULL);
+    SoupURI *proxy_uri = soup_uri_new(uri);
 
     g_object_set(Jumanji.Soup.session, "proxy-uri", proxy_uri, NULL);
 
@@ -2274,7 +2274,7 @@ sc_toggle_proxy(Argument* UNUSED(argument))
 }
 
 void
-sc_toggle_statusbar(Argument* UNUSED(argument))
+sc_toggle_statusbar(Argument *UNUSED(argument))
 {
   if(GTK_WIDGET_VISIBLE(GTK_WIDGET(Jumanji.UI.statusbar)))
     gtk_widget_hide(GTK_WIDGET(Jumanji.UI.statusbar));
@@ -2283,9 +2283,9 @@ sc_toggle_statusbar(Argument* UNUSED(argument))
 }
 
 void
-sc_toggle_sourcecode(Argument* UNUSED(argument))
+sc_toggle_sourcecode(Argument *UNUSED(argument))
 {
-  gchar* uri = (char*) webkit_web_view_get_uri(GET_CURRENT_TAB());
+  gchar *uri = (char*) webkit_web_view_get_uri(GET_CURRENT_TAB());
 
   if(webkit_web_view_get_view_source_mode(GET_CURRENT_TAB()))
     webkit_web_view_set_view_source_mode(GET_CURRENT_TAB(), FALSE);
@@ -2296,7 +2296,7 @@ sc_toggle_sourcecode(Argument* UNUSED(argument))
 }
 
 void
-sc_toggle_tabbar(Argument* UNUSED(argument))
+sc_toggle_tabbar(Argument *UNUSED(argument))
 {
   if(GTK_WIDGET_VISIBLE(GTK_WIDGET(Jumanji.UI.tabbar)))
     gtk_widget_hide(GTK_WIDGET(Jumanji.UI.tabbar));
@@ -2305,15 +2305,15 @@ sc_toggle_tabbar(Argument* UNUSED(argument))
 }
 
 void
-sc_quit(Argument* UNUSED(argument))
+sc_quit(Argument *UNUSED(argument))
 {
   cb_destroy(NULL, NULL);
 }
 
 void
-sc_yank(Argument* argument)
+sc_yank(Argument *argument)
 {
-  gchar* uri = (gchar*) webkit_web_view_get_uri(GET_CURRENT_TAB());
+  gchar *uri = (gchar*) webkit_web_view_get_uri(GET_CURRENT_TAB());
   if (argument->n == XA_CLIPBOARD)
     gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), uri, -1);
   else if (argument->n == XA_SECONDARY)
@@ -2321,20 +2321,20 @@ sc_yank(Argument* argument)
   else
     gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), uri, -1);
 
-  gchar* message = g_strdup_printf("Yanked %s", uri);
+  gchar *message = g_strdup_printf("Yanked %s", uri);
   notify(DEFAULT, message);
   g_free(message);
 }
 
 void
-sc_zoom(Argument* argument)
+sc_zoom(Argument *argument)
 {
   bcmd_zoom(NULL, argument);
 }
 
 /* inputbar shortcut declarations */
 void
-isc_abort(Argument* UNUSED(argument))
+isc_abort(Argument *UNUSED(argument))
 {
   Argument arg = { HIDE, NULL };
   isc_completion(&arg);
@@ -2345,7 +2345,7 @@ isc_abort(Argument* UNUSED(argument))
 }
 
 void
-isc_completion(Argument* argument)
+isc_completion(Argument *argument)
 {
   gchar *input      = gtk_editable_get_chars(GTK_EDITABLE(Jumanji.UI.inputbar), 0, -1);
   gchar  identifier = input[0];
@@ -2359,9 +2359,9 @@ isc_completion(Argument* argument)
   }
 
   /* get current information*/
-  char* first_space = strstr(input_m, " ");
-  char* current_command;
-  char* current_parameter;
+  char *first_space = strstr(input_m, " ");
+  char *current_command;
+  char *current_parameter;
   int   current_command_length;
 
   if(!first_space)
@@ -2436,7 +2436,7 @@ isc_completion(Argument* argument)
    *  the current command differs from the previous one
    *  the current parameter differs from the previous one
    */
-  if( (!results) )
+  if(!results)
   {
     results = GTK_BOX(gtk_vbox_new(FALSE, 0));
 
@@ -2488,8 +2488,8 @@ isc_completion(Argument* argument)
       }
 
       command_mode               = FALSE;
-      CompletionGroup* group     = NULL;
-      CompletionElement* element = NULL;
+      CompletionGroup *group     = NULL;
+      CompletionElement *element = NULL;
 
       rows = malloc(sizeof(CompletionRow));
       if(!rows)
@@ -2572,7 +2572,7 @@ isc_completion(Argument* argument)
   if( (results) && (n_items > 0) )
   {
     set_completion_row_color(results, NORMAL, current_item);
-    char* temp;
+    char *temp;
     int i = 0, next_group = 0;
 
     for(i = 0; i < n_items; i++)
@@ -2638,7 +2638,7 @@ isc_completion(Argument* argument)
 }
 
 void
-isc_command_history(Argument* argument)
+isc_command_history(Argument *argument)
 {
   static int current = 0;
   int        length  = g_list_length(Jumanji.Global.command_history);
@@ -2650,14 +2650,14 @@ isc_command_history(Argument* argument)
     else
       current = (length + current - 1) % length;
 
-    gchar* command = (gchar*) g_list_nth_data(Jumanji.Global.command_history, current);
+    gchar *command = (gchar*) g_list_nth_data(Jumanji.Global.command_history, current);
     notify(DEFAULT, command);
     gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), -1);
   }
 }
 
 void
-isc_string_manipulation(Argument* argument)
+isc_string_manipulation(Argument *argument)
 {
   gchar *input  = gtk_editable_get_chars(GTK_EDITABLE(Jumanji.UI.inputbar), 0, -1);
   int    length = strlen(input);
@@ -2737,7 +2737,7 @@ isc_string_manipulation(Argument* argument)
 
 /* command implementation */
 gboolean
-cmd_back(int UNUSED(argc), char** UNUSED(argv))
+cmd_back(int UNUSED(argc), char **UNUSED(argv))
 {
   Argument argument;
   argument.n = PREVIOUS;
@@ -2747,7 +2747,7 @@ cmd_back(int UNUSED(argc), char** UNUSED(argv))
 }
 
 gboolean
-cmd_bmap(int argc, char** argv)
+cmd_bmap(int argc, char **argv)
 {
   if(argc < 2)
     return TRUE;
@@ -2795,8 +2795,8 @@ cmd_bmap(int argc, char** argv)
   }
 
   /* search for existing buffered command to overwrite it */
-  BufferCommandList* bc = Jumanji.Bindings.bcmdlist;
-  while(bc && bc->next != NULL)
+  BufferCommandList *bc = Jumanji.Bindings.bcmdlist;
+  while(bc && bc->next)
   {
     if(!strcmp(bc->element.regex, argv[0]))
     {
@@ -2809,7 +2809,7 @@ cmd_bmap(int argc, char** argv)
   }
 
   /* create new entry */
-  BufferCommandList* entry = malloc(sizeof(BufferCommandList));
+  BufferCommandList *entry = malloc(sizeof(BufferCommandList));
   if(!entry)
     out_of_memory();
 
@@ -2829,13 +2829,13 @@ cmd_bmap(int argc, char** argv)
 }
 
 gboolean
-cmd_bookmark(int argc, char** argv)
+cmd_bookmark(int argc, char **argv)
 {
-  char* bookmark = g_strdup(webkit_web_view_get_uri(GET_CURRENT_TAB()));
+  char *bookmark = g_strdup(webkit_web_view_get_uri(GET_CURRENT_TAB()));
 
   /* at first we verify that bookmark (without tag) isn't already in the list */
   unsigned int bookmark_length = strlen(bookmark);
-  for(GList* l = Jumanji.Global.bookmarks; l; l = g_list_next(l))
+  for(GList *l = Jumanji.Global.bookmarks; l; l = g_list_next(l))
   {
     if(!strncmp(bookmark, (char*) l->data, bookmark_length))
     {
@@ -2858,8 +2858,8 @@ cmd_bookmark(int argc, char** argv)
    */
   if(argc >= 1 && argv[argc] == NULL)
   {
-    char* tags = g_strjoinv(" ", argv);
-    char* bookmark_temp = bookmark;
+    char *tags = g_strjoinv(" ", argv);
+    char *bookmark_temp = bookmark;
     bookmark = g_strjoin(" ", bookmark, tags, NULL);
 
     g_free(bookmark_temp);
@@ -2872,7 +2872,7 @@ cmd_bookmark(int argc, char** argv)
 }
 
 gboolean
-cmd_forward(int UNUSED(argc), char** UNUSED(argv))
+cmd_forward(int UNUSED(argc), char **UNUSED(argv))
 {
   Argument argument;
   argument.n = NEXT;
@@ -2882,12 +2882,12 @@ cmd_forward(int UNUSED(argc), char** UNUSED(argv))
 }
 
 gboolean
-cmd_map(int argc, char** argv)
+cmd_map(int argc, char **argv)
 {
   if(argc < 2)
     return TRUE;
 
-  char* ks = argv[0];
+  char *ks = argv[0];
 
   /* search for the right shortcut function */
   int sc_id = -1;
@@ -2922,7 +2922,7 @@ cmd_map(int argc, char** argv)
 
   else if(keyl >= 3 && ks[0] == '<' && ks[keyl-1] == '>')
   {
-    char* specialkey = NULL;
+    char *specialkey = NULL;
 
     /* check for modifier */
     if(keyl >= 5 && ks[2] == '-')
@@ -3018,8 +3018,8 @@ cmd_map(int argc, char** argv)
   }
 
   /* search for existing binding to overwrite it */
-  ShortcutList* sc = Jumanji.Bindings.sclist;
-  while(sc && sc->next != NULL)
+  ShortcutList *sc = Jumanji.Bindings.sclist;
+  while(sc && sc->next)
   {
     if(
        sc->element.key == key
@@ -3036,7 +3036,7 @@ cmd_map(int argc, char** argv)
   }
 
   /* create new entry */
-  ShortcutList* entry = malloc(sizeof(ShortcutList));
+  ShortcutList *entry = malloc(sizeof(ShortcutList));
   if(!entry)
     out_of_memory();
 
@@ -3058,7 +3058,7 @@ cmd_map(int argc, char** argv)
 }
 
 gboolean
-cmd_open(int argc, char** argv)
+cmd_open(int argc, char **argv)
 {
   if(argc <= 0)
     return TRUE;
@@ -3074,7 +3074,7 @@ cmd_open(int argc, char** argv)
 }
 
 gboolean
-cmd_plugintype(int argc, char** argv)
+cmd_plugintype(int argc, char **argv)
 {
   if(argc < 1)
     return TRUE;
@@ -3088,9 +3088,9 @@ cmd_plugintype(int argc, char** argv)
 }
 
 gboolean
-cmd_print(int UNUSED(argc), char** UNUSED(argv))
+cmd_print(int UNUSED(argc), char **UNUSED(argv))
 {
-  WebKitWebFrame* frame = webkit_web_view_get_main_frame(GET_CURRENT_TAB());
+  WebKitWebFrame *frame = webkit_web_view_get_main_frame(GET_CURRENT_TAB());
 
   if(!frame)
     return FALSE;
@@ -3101,21 +3101,21 @@ cmd_print(int UNUSED(argc), char** UNUSED(argv))
 }
 
 gboolean
-cmd_quit(int UNUSED(argc), char** UNUSED(argv))
+cmd_quit(int UNUSED(argc), char **UNUSED(argv))
 {
   sc_close_tab(NULL);
   return TRUE;
 }
 
 gboolean
-cmd_quitall(int UNUSED(argc), char** UNUSED(argv))
+cmd_quitall(int UNUSED(argc), char **UNUSED(argv))
 {
   cb_destroy(NULL, NULL);
   return TRUE;
 }
 
 gboolean
-cmd_reload(int UNUSED(argc), char** UNUSED(argv))
+cmd_reload(int UNUSED(argc), char **UNUSED(argv))
 {
   Argument argument = {0, 0};
   sc_reload(&argument);
@@ -3124,7 +3124,7 @@ cmd_reload(int UNUSED(argc), char** UNUSED(argv))
 }
 
 gboolean
-cmd_reload_all(int UNUSED(argc), char** UNUSED(argv))
+cmd_reload_all(int UNUSED(argc), char **UNUSED(argv))
 {
   int number_of_tabs = gtk_notebook_get_n_pages(Jumanji.UI.view);
   int i;
@@ -3136,18 +3136,18 @@ cmd_reload_all(int UNUSED(argc), char** UNUSED(argv))
 }
 
 gboolean
-cmd_saveas(int argc, char** argv)
+cmd_saveas(int argc, char **argv)
 {
-  char* filename;
+  char *filename;
 
   if(argc > 0)
     filename = argv[0];
   else
     filename = (char*) webkit_web_view_get_title(GET_CURRENT_TAB());
 
-  char* uri       = (char*) webkit_web_view_get_uri(GET_CURRENT_TAB());
-  char* file      = g_strconcat(download_dir, filename ? filename : uri, NULL);
-  char* command   = g_strdup_printf(download_command, uri, file);
+  char *uri       = (char*) webkit_web_view_get_uri(GET_CURRENT_TAB());
+  char *file      = g_strconcat(download_dir, filename ? filename : uri, NULL);
+  char *command   = g_strdup_printf(download_command, uri, file);
 
   g_spawn_command_line_async(command, NULL);
 
@@ -3158,25 +3158,25 @@ cmd_saveas(int argc, char** argv)
 }
 
 gboolean
-cmd_script(int argc, char** argv)
+cmd_script(int argc, char **argv)
 {
   if(argc < 1)
     return TRUE;
 
-  char* path    = argv[0];
-  char* content = read_file(path);
+  char *path    = argv[0];
+  char *content = read_file(path);
 
   if(!content)
   {
-    gchar* message = g_strdup_printf("Could not open or read file '%s'", path);
+    gchar *message = g_strdup_printf("Could not open or read file '%s'", path);
     notify(ERROR, message);
     g_free(message);
     return FALSE;
   }
 
   /* search for existing script to overwrite or reread it */
-  ScriptList* sl = Jumanji.Global.scripts;
-  while(sl && sl->next != NULL)
+  ScriptList *sl = Jumanji.Global.scripts;
+  while(sl && sl->next)
   {
     if(!strcmp(sl->path, path))
     {
@@ -3189,7 +3189,7 @@ cmd_script(int argc, char** argv)
   }
 
   /* load new script */
-  ScriptList* entry = malloc(sizeof(ScriptList));
+  ScriptList *entry = malloc(sizeof(ScriptList));
   if(!entry)
     out_of_memory();
 
@@ -3208,17 +3208,17 @@ cmd_script(int argc, char** argv)
 }
 
 gboolean
-cmd_search_engine(int argc, char** argv)
+cmd_search_engine(int argc, char **argv)
 {
   if(argc < 2)
     return TRUE;
 
-  char* name = argv[0];
-  char* uri  = argv[1];
+  char *name = argv[0];
+  char *uri  = argv[1];
 
   /* search for existing search engine to overwrite it */
-  SearchEngineList* se = Jumanji.Global.search_engines;
-  while(se && se->next != NULL)
+  SearchEngineList *se = Jumanji.Global.search_engines;
+  while(se && se->next)
   {
     if(!strcmp(se->name, name))
     {
@@ -3230,7 +3230,7 @@ cmd_search_engine(int argc, char** argv)
   }
 
   /* create new engine */
-  SearchEngineList* entry = malloc(sizeof(SearchEngineList));
+  SearchEngineList *entry = malloc(sizeof(SearchEngineList));
   if(!entry)
     out_of_memory();
 
@@ -3249,19 +3249,19 @@ cmd_search_engine(int argc, char** argv)
 }
 
 gboolean
-cmd_set(int argc, char** argv)
+cmd_set(int argc, char **argv)
 {
   if(argc <= 0)
     return TRUE;
 
   /* get webkit settings */
-  WebKitWebSettings* browser_settings;
+  WebKitWebSettings *browser_settings;
   if(Jumanji.UI.view && gtk_notebook_get_current_page(Jumanji.UI.view) >= 0)
     browser_settings = webkit_web_view_get_settings(GET_CURRENT_TAB());
   else
     browser_settings = Jumanji.Global.browser_settings;
 
-  WebKitWebView* current_wv = NULL;
+  WebKitWebView *current_wv = NULL;
   if(Jumanji.UI.view && gtk_notebook_get_current_page(Jumanji.UI.view) >= 0)
     current_wv = GET_CURRENT_TAB();
 
@@ -3348,7 +3348,7 @@ cmd_set(int argc, char** argv)
           return TRUE;
 
         /* assembly the arguments back to one string */
-        gchar* s = g_strjoinv(" ", &(argv[1]));
+        gchar *s = g_strjoinv(" ", &(argv[1]));
 
         if(settings[i].variable)
         {
@@ -3409,14 +3409,14 @@ cmd_set(int argc, char** argv)
 }
 
 gboolean
-cmd_stop(int UNUSED(argc), char** UNUSED(argv))
+cmd_stop(int UNUSED(argc), char **UNUSED(argv))
 {
   webkit_web_view_stop_loading(GET_CURRENT_TAB());
   return TRUE;
 }
 
 gboolean
-cmd_tabopen(int argc, char** argv)
+cmd_tabopen(int argc, char **argv)
 {
   if(argc <= 0)
     return TRUE;
@@ -3429,7 +3429,7 @@ cmd_tabopen(int argc, char** argv)
 }
 
 gboolean
-cmd_winopen(int argc, char** argv)
+cmd_winopen(int argc, char **argv)
 {
   if(argc <= 0)
     return TRUE;
@@ -3442,19 +3442,19 @@ cmd_winopen(int argc, char** argv)
 }
 
 gboolean
-cmd_write(int UNUSED(argc), char** UNUSED(argv))
+cmd_write(int UNUSED(argc), char **UNUSED(argv))
 {
   /* save bookmarks */
   GString *bookmark_list = g_string_new("");
 
-  for(GList* l = Jumanji.Global.bookmarks; l; l = g_list_next(l))
+  for(GList *l = Jumanji.Global.bookmarks; l; l = g_list_next(l))
   {
-    char* bookmark = g_strconcat((char*) l->data, "\n", NULL);
+    char *bookmark = g_strconcat((char*) l->data, "\n", NULL);
     bookmark_list = g_string_append(bookmark_list, bookmark);
     g_free(bookmark);
   }
 
-  char* bookmark_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_BOOKMARKS, NULL);
+  char *bookmark_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_BOOKMARKS, NULL);
   g_file_set_contents(bookmark_file, bookmark_list->str, -1, NULL);
 
   g_free(bookmark_file);
@@ -3464,16 +3464,16 @@ cmd_write(int UNUSED(argc), char** UNUSED(argv))
   GString *history_list = g_string_new("");
 
   int h_counter = 0;
-  for(GList* h = Jumanji.Global.history; h && (!history_limit || h_counter < history_limit); h = g_list_next(h))
+  for(GList *h = Jumanji.Global.history; h && (!history_limit || h_counter < history_limit); h = g_list_next(h))
   {
-    char* uri = g_strconcat((char*) h->data, "\n", NULL);
+    char *uri = g_strconcat((char*) h->data, "\n", NULL);
     history_list = g_string_append(history_list, uri);
     g_free(uri);
 
     h_counter += 1;
   }
 
-  char* history_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_HISTORY, NULL);
+  char *history_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_HISTORY, NULL);
   g_file_set_contents(history_file, history_list->str, -1, NULL);
 
   g_free(history_file);
@@ -3485,19 +3485,19 @@ cmd_write(int UNUSED(argc), char** UNUSED(argv))
   /* save session */
   sessionsave(default_session_name);
 
-  GString* session_list = g_string_new("");
+  GString *session_list = g_string_new("");
 
-  for(GList* se_list = Jumanji.Global.sessions; se_list; se_list = g_list_next(se_list))
+  for(GList *se_list = Jumanji.Global.sessions; se_list; se_list = g_list_next(se_list))
   {
-    Session* se = se_list->data;
+    Session *se = se_list->data;
 
-    gchar* session_lines = g_strconcat(se->name, "\n", se->uris, "\n", NULL);
+    gchar *session_lines = g_strconcat(se->name, "\n", se->uris, "\n", NULL);
     session_list = g_string_append(session_list, session_lines);
 
     g_free(session_lines);
   }
 
-  gchar* session_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_SESSIONS, NULL);
+  gchar *session_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_SESSIONS, NULL);
   g_file_set_contents(session_file, session_list->str, -1, NULL);
 
   g_free(session_file);
@@ -3507,12 +3507,12 @@ cmd_write(int UNUSED(argc), char** UNUSED(argv))
 }
 
 gboolean
-cmd_sessionsave(int argc, char** argv)
+cmd_sessionsave(int argc, char **argv)
 {
   if(argc <= 0 || argv[argc] != NULL)
     return FALSE;
 
-  gchar* session_name   = g_strjoinv(" ", argv);
+  gchar *session_name   = g_strjoinv(" ", argv);
 
   gboolean to_return = sessionsave(session_name);
 
@@ -3522,12 +3522,12 @@ cmd_sessionsave(int argc, char** argv)
 }
 
 gboolean
-cmd_sessionswitch(int argc, char** argv)
+cmd_sessionswitch(int argc, char **argv)
 {
   if(argc <= 0 || argv[argc] != NULL)
     return FALSE;
 
-  gchar* session_name   = g_strjoinv(" ", argv);
+  gchar *session_name   = g_strjoinv(" ", argv);
 
   gboolean to_return = sessionswitch(session_name);
 
@@ -3537,12 +3537,12 @@ cmd_sessionswitch(int argc, char** argv)
 }
 
 gboolean
-cmd_sessionload(int argc, char** argv)
+cmd_sessionload(int argc, char **argv)
 {
   if(argc <= 0 || argv[argc] != NULL)
     return FALSE;
 
-  gchar* session_name = g_strjoinv(" ", argv);
+  gchar *session_name = g_strjoinv(" ", argv);
 
   gboolean to_return = sessionload(session_name);
 
@@ -3553,13 +3553,13 @@ cmd_sessionload(int argc, char** argv)
 
 /* completion command implementation */
 Completion*
-cc_open(char* input)
+cc_open(char *input)
 {
-  Completion* completion = completion_init();
+  Completion *completion = completion_init();
 
   /* search engines */
-  CompletionGroup* search_engines = completion_group_create("Search engines");
-  SearchEngineList* se = Jumanji.Global.search_engines;
+  CompletionGroup *search_engines = completion_group_create("Search engines");
+  SearchEngineList *se = Jumanji.Global.search_engines;
 
   /*if(se)*/
     completion_add_group(completion, search_engines);
@@ -3572,18 +3572,18 @@ cc_open(char* input)
   }
 
   /* we make bookmark and history completion case insensitive */
-  gchar* lowercase_input = g_utf8_strdown(input, -1);
+  gchar *lowercase_input = g_utf8_strdown(input, -1);
 
   /* bookmarks */
   if(Jumanji.Global.bookmarks)
   {
-    CompletionGroup* bookmarks = completion_group_create("Bookmarks");
+    CompletionGroup *bookmarks = completion_group_create("Bookmarks");
     completion_add_group(completion, bookmarks);
 
-    for(GList* l = Jumanji.Global.bookmarks; l; l = g_list_next(l))
+    for(GList *l = Jumanji.Global.bookmarks; l; l = g_list_next(l))
     {
-      char* bookmark = (char*) l->data;
-      gchar* lowercase_bookmark = g_utf8_strdown(bookmark, -1);
+      char *bookmark = (char*) l->data;
+      gchar *lowercase_bookmark = g_utf8_strdown(bookmark, -1);
 
       /* case insensitive search */
       if(strstr(lowercase_bookmark, lowercase_input))
@@ -3596,13 +3596,13 @@ cc_open(char* input)
   /* history */
   if(Jumanji.Global.history)
   {
-    CompletionGroup* history = completion_group_create("History");
+    CompletionGroup *history = completion_group_create("History");
     completion_add_group(completion, history);
 
-    for(GList* h = Jumanji.Global.history; h; h = g_list_next(h))
+    for(GList *h = Jumanji.Global.history; h; h = g_list_next(h))
     {
-      char* uri = (char*) h->data;
-      gchar* lowercase_uri = g_utf8_strdown(uri, -1);
+      char *uri = (char*) h->data;
+      gchar *lowercase_uri = g_utf8_strdown(uri, -1);
 
       /* case insensitive search */
       if(strstr(lowercase_uri, lowercase_input))
@@ -3618,16 +3618,16 @@ cc_open(char* input)
 }
 
 Completion*
-cc_session(char* input)
+cc_session(char *input)
 {
-  Completion* completion = completion_init();
-  CompletionGroup* group = completion_group_create(NULL);
+  Completion *completion = completion_init();
+  CompletionGroup *group = completion_group_create(NULL);
 
   completion_add_group(completion, group);
 
-  for(GList* l = Jumanji.Global.sessions; l; l = g_list_next(l))
+  for(GList *l = Jumanji.Global.sessions; l; l = g_list_next(l))
   {
-    Session* se = l->data;
+    Session *se = l->data;
 
     if(strstr(se->name, input))
       completion_group_add_element(group, se->name, NULL);
@@ -3637,10 +3637,10 @@ cc_session(char* input)
 }
 
 Completion*
-cc_set(char* input)
+cc_set(char *input)
 {
-  Completion* completion = completion_init();
-  CompletionGroup* group = completion_group_create(NULL);
+  Completion *completion = completion_init();
+  CompletionGroup *group = completion_group_create(NULL);
 
   completion_add_group(completion, group);
 
@@ -3660,7 +3660,7 @@ cc_set(char* input)
 }
 
 void
-bcmd_back_or_forward(char* buffer, Argument* argument)
+bcmd_back_or_forward(char *buffer, Argument *argument)
 {
   size_t len = strlen(buffer);
 
@@ -3678,19 +3678,19 @@ bcmd_back_or_forward(char* buffer, Argument* argument)
 
 /* buffer command implementation */
 void
-bcmd_close_tab(char* UNUSED(buffer), Argument* argument)
+bcmd_close_tab(char *UNUSED(buffer), Argument *argument)
 {
   sc_close_tab(argument);
 }
 
 void
-bcmd_stop(char* UNUSED(buffer), Argument* UNUSED(argument))
+bcmd_stop(char *UNUSED(buffer), Argument *UNUSED(argument))
 {
   cmd_stop(0, NULL); 
 }
 
 void
-bcmd_go_home(char* UNUSED(buffer), Argument* argument)
+bcmd_go_home(char *UNUSED(buffer), Argument *argument)
 {
   if(argument->n == NEW_TAB)
     create_tab(home_page, FALSE);
@@ -3699,21 +3699,21 @@ bcmd_go_home(char* UNUSED(buffer), Argument* argument)
 }
 
 void
-bcmd_go_parent(char* buffer, Argument* UNUSED(argument))
+bcmd_go_parent(char *buffer, Argument *UNUSED(argument))
 {
-  char* current_uri = (char*) webkit_web_view_get_uri(GET_CURRENT_TAB());
+  char *current_uri = (char*) webkit_web_view_get_uri(GET_CURRENT_TAB());
   if(!current_uri)
     return;
 
   /* calcuate root */
   int   o = g_str_has_prefix(current_uri, "https://") ? 8 : 7;
   int  rl = 0;
-  char* r = current_uri + o;
+  char *r = current_uri + o;
 
   while(r && *r != '/')
     rl++, r++;
 
-  char* root = g_strndup(current_uri, o + rl + 1);
+  char *root = g_strndup(current_uri, o + rl + 1);
 
   /* go to the root of the website */
   if(!strcmp(buffer, "gU"))
@@ -3728,7 +3728,7 @@ bcmd_go_parent(char* buffer, Argument* UNUSED(argument))
     if(count <= 0)
       count = 1;
 
-    char* directories = g_strndup(current_uri + strlen(root), strlen(current_uri) - strlen(root));
+    char *directories = g_strndup(current_uri + strlen(root), strlen(current_uri) - strlen(root));
 
     if(strlen(directories) <= 0)
       open_uri(GET_CURRENT_TAB(), root);
@@ -3737,13 +3737,13 @@ bcmd_go_parent(char* buffer, Argument* UNUSED(argument))
       gchar **tokens = g_strsplit(directories, "/", -1);
       int     length = g_strv_length(tokens) - 1;
 
-      GString* tmp = g_string_new("");
+      GString *tmp = g_string_new("");
 
       int i;
       for(i = 0; i < length - count; i++)
         g_string_append(tmp, tokens[i]);
 
-      char* new_uri = g_strconcat(root, tmp->str, NULL);
+      char *new_uri = g_strconcat(root, tmp->str, NULL);
       open_uri(GET_CURRENT_TAB(), new_uri);
 
       g_free(new_uri);
@@ -3758,13 +3758,13 @@ bcmd_go_parent(char* buffer, Argument* UNUSED(argument))
 }
 
 void
-bcmd_nav_history(char* UNUSED(buffer), Argument* argument)
+bcmd_nav_history(char *UNUSED(buffer), Argument *argument)
 {
   sc_nav_history(argument);
 }
 
 void
-bcmd_nav_tabs(char* buffer, Argument* argument)
+bcmd_nav_tabs(char *buffer, Argument *argument)
 {
   int current_tab     = gtk_notebook_get_current_page(Jumanji.UI.view);
   int number_of_tabs  = gtk_notebook_get_n_pages(Jumanji.UI.view);
@@ -3782,9 +3782,9 @@ bcmd_nav_tabs(char* buffer, Argument* argument)
 
     int digit_end = 0;
     while(g_ascii_isdigit(buffer[digit_end]))
-      digit_end = digit_end + 1;
+      ++digit_end;
 
-    char* number = g_strndup(buffer, digit_end);
+    char *number = g_strndup(buffer, digit_end);
     new_tab      = atoi(number) - 1;
     g_free(number);
   }
@@ -3796,19 +3796,19 @@ bcmd_nav_tabs(char* buffer, Argument* argument)
 }
 
 void
-bcmd_paste(char* UNUSED(buffer), Argument* argument)
+bcmd_paste(char *UNUSED(buffer), Argument *argument)
 {
   sc_paste(argument);
 }
 
 void
-bcmd_quit(char* UNUSED(buffer), Argument* UNUSED(argument))
+bcmd_quit(char *UNUSED(buffer), Argument *UNUSED(argument))
 {
   cmd_quitall(0, NULL);
 }
 
 void
-bcmd_scroll(char* buffer, Argument* argument)
+bcmd_scroll(char *buffer, Argument *argument)
 {
   if(argument->n == TOP || argument->n == BOTTOM)
   {
@@ -3816,7 +3816,7 @@ bcmd_scroll(char* buffer, Argument* argument)
     return;
   }
 
-  GtkAdjustment* adjustment = gtk_scrolled_window_get_vadjustment(GET_CURRENT_TAB_WIDGET());
+  GtkAdjustment *adjustment = gtk_scrolled_window_get_vadjustment(GET_CURRENT_TAB_WIDGET());
 
   gdouble view_size = gtk_adjustment_get_page_size(adjustment);
   gdouble max       = gtk_adjustment_get_upper(adjustment) - view_size;
@@ -3829,10 +3829,10 @@ bcmd_scroll(char* buffer, Argument* argument)
 }
 
 void
-bcmd_spawn(char* UNUSED(buffer), Argument* argument)
+bcmd_spawn(char *UNUSED(buffer), Argument *argument)
 {
-  char* uri     = (char*) webkit_web_view_get_uri(GET_CURRENT_TAB());
-  char* command = g_strdup_printf(argument->data, uri);
+  char *uri     = (char*) webkit_web_view_get_uri(GET_CURRENT_TAB());
+  char *command = g_strdup_printf(argument->data, uri);
 
   g_spawn_command_line_async(command, NULL);
 
@@ -3840,12 +3840,12 @@ bcmd_spawn(char* UNUSED(buffer), Argument* argument)
 }
 
 void
-bcmd_toggle_sourcecode(char* UNUSED(buffer), Argument* argument)
+bcmd_toggle_sourcecode(char *UNUSED(buffer), Argument *argument)
 {
   if(argument->n == OPEN_EXTERNAL)
   {
-    gchar* uri    = (gchar*) webkit_web_view_get_uri(GET_CURRENT_TAB());
-    char* command = g_strdup_printf(spawn_editor, uri);
+    gchar *uri    = (gchar*) webkit_web_view_get_uri(GET_CURRENT_TAB());
+    char *command = g_strdup_printf(spawn_editor, uri);
 
     g_spawn_command_line_async(command, NULL);
 
@@ -3856,7 +3856,7 @@ bcmd_toggle_sourcecode(char* UNUSED(buffer), Argument* argument)
 }
 
 void
-bcmd_zoom(char* buffer, Argument* argument)
+bcmd_zoom(char *buffer, Argument *argument)
 {
   float zoom_level = webkit_web_view_get_zoom_level(GET_CURRENT_TAB());
 
@@ -3868,19 +3868,19 @@ bcmd_zoom(char* buffer, Argument* argument)
     webkit_web_view_set_zoom_level(GET_CURRENT_TAB(), 1.0f);
   else if(argument->n == SPECIFIC)
   {
-    char* number = g_strndup(buffer, strlen(buffer) - 1);
+    char *number = g_strndup(buffer, strlen(buffer) - 1);
     webkit_web_view_set_zoom_level(GET_CURRENT_TAB(), (float) (atoi(number) / 100));
     g_free(number);
   }
 }
 
 /* search (special)command global variables */
-char* search_item = NULL;
+char *search_item = NULL;
 gboolean search_item_changed = FALSE;
 
 /* special command implementation */
 gboolean
-scmd_search(char* input, Argument* argument, gboolean activate)
+scmd_search(char *input, Argument *argument, gboolean activate)
 {
   static guint search_and_highlight_id;
 
@@ -3915,12 +3915,12 @@ scmd_search(char* input, Argument* argument, gboolean activate)
 gboolean
 search_and_highlight(Argument* argument)
 {
-  static WebKitWebView* last_wv = NULL;
+  static WebKitWebView *last_wv = NULL;
 
   if(search_item && !strlen(search_item))
     return FALSE;
 
-  WebKitWebView* current_wv = GET_CURRENT_TAB();
+  WebKitWebView *current_wv = GET_CURRENT_TAB();
 
   if(search_item_changed || last_wv != current_wv)
   {
@@ -3940,7 +3940,7 @@ search_and_highlight(Argument* argument)
 
 /* callback implementation */
 UniqueResponse
-cb_app_message_received(UniqueApp* UNUSED(application), gint UNUSED(command), UniqueMessageData* message_data, guint UNUSED(time), gpointer UNUSED(data))
+cb_app_message_received(UniqueApp *UNUSED(application), gint UNUSED(command), UniqueMessageData *message_data, guint UNUSED(time), gpointer UNUSED(data))
 {
   if(message_data)
     create_tab(unique_message_data_get_text(message_data), FALSE);
@@ -3955,7 +3955,7 @@ cb_blank()
 }
 
 gboolean
-cb_destroy(GtkWidget* UNUSED(widget), gpointer UNUSED(data))
+cb_destroy(GtkWidget *UNUSED(widget), gpointer UNUSED(data))
 {
   pango_font_description_free(Jumanji.Style.font);
 
@@ -3963,7 +3963,7 @@ cb_destroy(GtkWidget* UNUSED(widget), gpointer UNUSED(data))
   cmd_write(0, NULL);
 
   /* clear bookmarks */
-  GList* list;
+  GList *list;
   for(list = Jumanji.Global.bookmarks; list; list = g_list_next(list))
     free(list->data);
 
@@ -3977,31 +3977,31 @@ cb_destroy(GtkWidget* UNUSED(widget), gpointer UNUSED(data))
   g_list_free(Jumanji.Global.last_closed);
 
   /* clean shortcut list */
-  ShortcutList* sc = Jumanji.Bindings.sclist;
+  ShortcutList *sc = Jumanji.Bindings.sclist;
 
   while(sc)
   {
-    ShortcutList* ne = sc->next;
+    ShortcutList *ne = sc->next;
     free(sc);
     sc = ne;
   }
 
   /* clean loaded scripts */
-  SearchEngineList* se = Jumanji.Global.search_engines;
+  SearchEngineList *se = Jumanji.Global.search_engines;
 
   while(se)
   {
-    SearchEngineList* ne = se->next;
+    SearchEngineList *ne = se->next;
     free(se);
     se = ne;
   }
 
   /* clean loaded scripts */
-  ScriptList* sl = Jumanji.Global.scripts;
+  ScriptList *sl = Jumanji.Global.scripts;
 
   while(sl)
   {
-    ScriptList* ne = sl->next;
+    ScriptList *ne = sl->next;
     if(sl->content)
       free(sl->content);
     free(sl);
@@ -4038,7 +4038,7 @@ cb_destroy(GtkWidget* UNUSED(widget), gpointer UNUSED(data))
 }
 
 gboolean
-cb_inputbar_kb_pressed(GtkWidget* UNUSED(widget), GdkEventKey* event, gpointer UNUSED(data))
+cb_inputbar_kb_pressed(GtkWidget *UNUSED(widget), GdkEventKey *event, gpointer UNUSED(data))
 {
   guint keyval;
   GdkModifierType consumed_modifiers;
@@ -4062,7 +4062,7 @@ cb_inputbar_kb_pressed(GtkWidget* UNUSED(widget), GdkEventKey* event, gpointer U
 }
 
 void
-cb_inputbar_changed(GtkEditable* UNUSED(editable), gpointer UNUSED(data))
+cb_inputbar_changed(GtkEditable *UNUSED(editable), gpointer UNUSED(data))
 {
   /* special commands */
   gchar *input  = gtk_editable_get_chars(GTK_EDITABLE(Jumanji.UI.inputbar), 0, -1);
@@ -4083,7 +4083,7 @@ cb_inputbar_changed(GtkEditable* UNUSED(editable), gpointer UNUSED(data))
 }
 
 gboolean
-cb_inputbar_activate(GtkEntry* entry, gpointer UNUSED(data))
+cb_inputbar_activate(GtkEntry *entry, gpointer UNUSED(data))
 {
   gchar  *input  = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
   char identifier = input[0];
@@ -4148,7 +4148,7 @@ cb_inputbar_activate(GtkEntry* entry, gpointer UNUSED(data))
 }
 
 gboolean
-cb_tab_kb_pressed(GtkWidget* UNUSED(widget), GdkEventKey* event, gpointer UNUSED(data))
+cb_tab_kb_pressed(GtkWidget *UNUSED(widget), GdkEventKey *event, gpointer UNUSED(data))
 {
   guint keyval;
   GdkModifierType consumed_modifiers;
@@ -4157,7 +4157,7 @@ cb_tab_kb_pressed(GtkWidget* UNUSED(widget), GdkEventKey* event, gpointer UNUSED
       Jumanji.Global.keymap, event->hardware_keycode, event->state, event->group, /* inner */
       &keyval, NULL, NULL, &consumed_modifiers); /* outer */
 
-  for(ShortcutList* sc = Jumanji.Bindings.sclist; sc; sc = sc->next)
+  for(ShortcutList *sc = Jumanji.Bindings.sclist; sc; sc = sc->next)
   {
     if(
        keyval == sc->element.key                                              /* test key  */
@@ -4219,7 +4219,7 @@ cb_tab_kb_pressed(GtkWidget* UNUSED(widget), GdkEventKey* event, gpointer UNUSED
   /* search buffer commands */
   if(Jumanji.Global.buffer)
   {
-    BufferCommandList* bc = Jumanji.Bindings.bcmdlist;
+    BufferCommandList *bc = Jumanji.Bindings.bcmdlist;
     while(bc)
     {
       regex_t regex;
@@ -4247,7 +4247,7 @@ cb_tab_kb_pressed(GtkWidget* UNUSED(widget), GdkEventKey* event, gpointer UNUSED
 }
 
 gboolean
-cb_tab_clicked(GtkWidget* UNUSED(widget), GdkEventButton* event, gpointer data)
+cb_tab_clicked(GtkWidget *UNUSED(widget), GdkEventButton *event, gpointer data)
 {
   int position = gtk_notebook_page_num(Jumanji.UI.view, (GtkWidget*) data);
 
@@ -4270,14 +4270,14 @@ cb_tab_clicked(GtkWidget* UNUSED(widget), GdkEventButton* event, gpointer data)
 }
 
 GtkWidget*
-cb_wv_block_plugin(WebKitWebView* UNUSED(wv), gchar* mime_type, gchar* uri,
-    GHashTable* UNUSED(param), gpointer UNUSED(data))
+cb_wv_block_plugin(WebKitWebView *UNUSED(wv), gchar *mime_type, gchar *uri,
+    GHashTable *UNUSED(param), gpointer UNUSED(data))
 {
   if(!plugin_blocker)
     return NULL;
 
   /* check if plugin type is allowed */
-  GList* l;
+  GList *l;
   for(l = Jumanji.Global.allowed_plugins; l; l = g_list_next(l))
   {
     if(!strcmp((char*) l->data, mime_type))
@@ -4296,8 +4296,8 @@ cb_wv_block_plugin(WebKitWebView* UNUSED(wv), gchar* mime_type, gchar* uri,
   plugin->uri    = strdup(uri);
   plugin->box    = gtk_event_box_new();
 
-  char* label_text = g_strconcat("Click to enable \"", mime_type, "\" plugin", NULL);
-  GtkWidget* label  = gtk_label_new(label_text);
+  char *label_text = g_strconcat("Click to enable \"", mime_type, "\" plugin", NULL);
+  GtkWidget *label  = gtk_label_new(label_text);
 
   gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
   gtk_container_add(GTK_CONTAINER(plugin->box), label);
@@ -4312,7 +4312,7 @@ cb_wv_block_plugin(WebKitWebView* UNUSED(wv), gchar* mime_type, gchar* uri,
 }
 
 gboolean
-cb_wv_button_release_event(GtkWidget* UNUSED(widget), GdkEvent* event, gpointer UNUSED(data))
+cb_wv_button_release_event(GtkWidget *UNUSED(widget), GdkEvent *event, gpointer UNUSED(data))
 {
   for(unsigned int i = 0; i < LENGTH(mouse); i++)
   {
@@ -4332,8 +4332,8 @@ cb_wv_button_release_event(GtkWidget* UNUSED(widget), GdkEvent* event, gpointer 
 }
 
 gboolean
-cb_wv_console(WebKitWebView* UNUSED(wv), char* message, int UNUSED(line),
-    char* UNUSED(source), gpointer UNUSED(data))
+cb_wv_console(WebKitWebView *UNUSED(wv), char *message, int UNUSED(line),
+    char *UNUSED(source), gpointer UNUSED(data))
 {
   if(!strcmp(message, "hintmode_off") || !strcmp(message, "insertmode_off"))
     change_mode(NORMAL);
@@ -4344,19 +4344,19 @@ cb_wv_console(WebKitWebView* UNUSED(wv), char* message, int UNUSED(line),
 }
 
 GtkWidget*
-cb_wv_create_web_view(WebKitWebView* wv, WebKitWebFrame* UNUSED(frame), gpointer UNUSED(data))
+cb_wv_create_web_view(WebKitWebView *wv, WebKitWebFrame *UNUSED(frame), gpointer UNUSED(data))
 {
-  char* uri = (char*) webkit_web_view_get_uri(wv);
-  GtkWidget* tab = create_tab(uri, TRUE);
+  char *uri = (char*) webkit_web_view_get_uri(wv);
+  GtkWidget *tab = create_tab(uri, TRUE);
 
   return tab;
 }
 
 gboolean
-cb_wv_download_request(WebKitWebView* UNUSED(wv), WebKitDownload* download, gpointer UNUSED(data))
+cb_wv_download_request(WebKitWebView *UNUSED(wv), WebKitDownload *download, gpointer UNUSED(data))
 {
-  const char* uri      = webkit_download_get_uri(download);
-  const char* filename = webkit_download_get_suggested_filename(download);
+  const char *uri      = webkit_download_get_uri(download);
+  const char *filename = webkit_download_get_suggested_filename(download);
 
   if(!uri)
   {
@@ -4365,7 +4365,7 @@ cb_wv_download_request(WebKitWebView* UNUSED(wv), WebKitDownload* download, gpoi
   }
 
   /* create download directory directory */
-  char* download_path = NULL;
+  char *download_path = NULL;
   if(download_dir[0] == '~')
     download_path = g_build_filename(g_get_home_dir(), download_dir + 1, NULL);
   else
@@ -4374,8 +4374,8 @@ cb_wv_download_request(WebKitWebView* UNUSED(wv), WebKitDownload* download, gpoi
   g_mkdir_with_parents(download_path,  0771);
 
   /* download file */
-  char* file      = g_build_filename(download_path, filename ? filename : uri, NULL);
-  char* command   = g_strdup_printf(download_command, uri, file);
+  char *file      = g_build_filename(download_path, filename ? filename : uri, NULL);
+  char *command   = g_strdup_printf(download_command, uri, file);
 
   g_spawn_command_line_async(command, NULL);
 
@@ -4387,8 +4387,8 @@ cb_wv_download_request(WebKitWebView* UNUSED(wv), WebKitDownload* download, gpoi
 }
 
 gboolean
-cb_wv_mimetype_policy_decision(WebKitWebView* wv, WebKitWebFrame* UNUSED(frame),
-    WebKitNetworkRequest* UNUSED(request), char* mimetype, WebKitWebPolicyDecision* decision,
+cb_wv_mimetype_policy_decision(WebKitWebView *wv, WebKitWebFrame *UNUSED(frame),
+    WebKitNetworkRequest *UNUSED(request), char *mimetype, WebKitWebPolicyDecision *decision,
     gpointer UNUSED(data))
 {
   if(!webkit_web_view_can_show_mime_type(wv, mimetype))
@@ -4401,7 +4401,7 @@ cb_wv_mimetype_policy_decision(WebKitWebView* wv, WebKitWebFrame* UNUSED(frame),
 }
 
 gboolean
-cb_wv_hover_link(WebKitWebView* UNUSED(wv), char* UNUSED(title), char* link, gpointer UNUSED(data))
+cb_wv_hover_link(WebKitWebView *UNUSED(wv), char *UNUSED(title), char *link, gpointer UNUSED(data))
 {
   if(link)
   {
@@ -4416,10 +4416,10 @@ cb_wv_hover_link(WebKitWebView* UNUSED(wv), char* UNUSED(title), char* link, gpo
 }
 
 WebKitWebView*
-cb_wv_inspector_view(WebKitWebInspector* UNUSED(inspector), WebKitWebView* wv, gpointer UNUSED(data))
+cb_wv_inspector_view(WebKitWebInspector *UNUSED(inspector), WebKitWebView *wv, gpointer UNUSED(data))
 {
-  GtkWidget* window;
-  GtkWidget* webview;
+  GtkWidget *window;
+  GtkWidget *webview;
 
   /* create window */
   if(Jumanji.UI.embed)
@@ -4428,7 +4428,7 @@ cb_wv_inspector_view(WebKitWebInspector* UNUSED(inspector), WebKitWebView* wv, g
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
   /* set title */
-  gchar* title = g_strdup_printf("WebInspector (%s) - jumanji", webkit_web_view_get_uri(wv));
+  gchar *title = g_strdup_printf("WebInspector (%s) - jumanji", webkit_web_view_get_uri(wv));
   gtk_window_set_title(GTK_WINDOW(window), title);
   g_free(title);
 
@@ -4442,9 +4442,9 @@ cb_wv_inspector_view(WebKitWebInspector* UNUSED(inspector), WebKitWebView* wv, g
 }
 
 gboolean
-cb_wv_nav_policy_decision(WebKitWebView* UNUSED(wv), WebKitWebFrame* UNUSED(frame),
-    WebKitNetworkRequest* request, WebKitWebNavigationAction* action,
-    WebKitWebPolicyDecision* decision, gpointer UNUSED(data))
+cb_wv_nav_policy_decision(WebKitWebView *UNUSED(wv), WebKitWebFrame *UNUSED(frame),
+    WebKitNetworkRequest *request, WebKitWebNavigationAction *action,
+    WebKitWebPolicyDecision *decision, gpointer UNUSED(data))
 {
   switch(webkit_web_navigation_action_get_button(action))
   {
@@ -4462,7 +4462,7 @@ cb_wv_nav_policy_decision(WebKitWebView* UNUSED(wv), WebKitWebFrame* UNUSED(fram
 }
 
 gboolean
-cb_wv_notify_progress(WebKitWebView* wv, GParamSpec* UNUSED(pspec), gpointer UNUSED(data))
+cb_wv_notify_progress(WebKitWebView *wv, GParamSpec *UNUSED(pspec), gpointer UNUSED(data))
 {
   if(wv == GET_CURRENT_TAB() && gtk_notebook_get_current_page(Jumanji.UI.view) != -1)
     update_uri();
@@ -4471,9 +4471,9 @@ cb_wv_notify_progress(WebKitWebView* wv, GParamSpec* UNUSED(pspec), gpointer UNU
 }
 
 gboolean
-cb_wv_notify_title(WebKitWebView* wv, GParamSpec* UNUSED(pspec), gpointer UNUSED(data))
+cb_wv_notify_title(WebKitWebView *wv, GParamSpec *UNUSED(pspec), gpointer UNUSED(data))
 {
-  const char* title = webkit_web_view_get_title(wv);
+  const char *title = webkit_web_view_get_title(wv);
   if(title)
   {
     gtk_window_set_title(GTK_WINDOW(Jumanji.UI.window), title);
@@ -4484,18 +4484,18 @@ cb_wv_notify_title(WebKitWebView* wv, GParamSpec* UNUSED(pspec), gpointer UNUSED
 }
 
 gboolean
-cb_wv_scrolled(GtkAdjustment* UNUSED(adjustment), gpointer UNUSED(data))
+cb_wv_scrolled(GtkAdjustment *UNUSED(adjustment), gpointer UNUSED(data))
 {
   update_position();
   return TRUE;
 }
 
 gboolean
-cb_wv_unblock_plugin(GtkWidget* UNUSED(widget), GdkEventButton* UNUSED(event), gpointer data)
+cb_wv_unblock_plugin(GtkWidget *UNUSED(widget), GdkEventButton *UNUSED(event), gpointer data)
 {
-  Plugin* plugin = (Plugin*) data;
+  Plugin *plugin = (Plugin*) data;
 
-  GtkWidget* parent = gtk_widget_get_parent(plugin->box);
+  GtkWidget *parent = gtk_widget_get_parent(plugin->box);
   gtk_container_remove(GTK_CONTAINER(parent), plugin->box);
 
   /* move uri to allowed plugin list */
@@ -4510,8 +4510,8 @@ cb_wv_unblock_plugin(GtkWidget* UNUSED(widget), GdkEventButton* UNUSED(event), g
 }
 
 gboolean
-cb_wv_window_policy_decision(WebKitWebView* UNUSED(wv), WebKitWebFrame* UNUSED(frame), WebKitNetworkRequest* request,
-    WebKitWebNavigationAction* action, WebKitWebPolicyDecision* decision, gpointer UNUSED(data))
+cb_wv_window_policy_decision(WebKitWebView *UNUSED(wv), WebKitWebFrame *UNUSED(frame), WebKitNetworkRequest *request,
+    WebKitWebNavigationAction *action, WebKitWebPolicyDecision *decision, gpointer UNUSED(data))
 {
   if(webkit_web_navigation_action_get_reason(action) == WEBKIT_WEB_NAVIGATION_REASON_LINK_CLICKED)
   {
@@ -4524,7 +4524,7 @@ cb_wv_window_policy_decision(WebKitWebView* UNUSED(wv), WebKitWebFrame* UNUSED(f
 }
 
 gboolean
-cb_wv_window_object_cleared(WebKitWebView* UNUSED(wv), WebKitWebFrame* UNUSED(frame), gpointer context,
+cb_wv_window_object_cleared(WebKitWebView *UNUSED(wv), WebKitWebFrame *UNUSED(frame), gpointer context,
     gpointer UNUSED(window_object), gpointer UNUSED(data))
 {
   /* load all added scripts */
@@ -4545,7 +4545,7 @@ cb_wv_window_object_cleared(WebKitWebView* UNUSED(wv), WebKitWebFrame* UNUSED(fr
 }
 
 /* main function */
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
   g_thread_init(NULL);
 
@@ -4581,7 +4581,7 @@ int main(int argc, char* argv[])
   read_configuration();
 
   /* single instance */
-  UniqueApp* application = NULL;
+  UniqueApp *application = NULL;
   if(single_instance)
   {
     application = unique_app_new_with_commands("pwmt.jumanji", NULL, "open", 1, NULL);
@@ -4590,7 +4590,7 @@ int main(int argc, char* argv[])
     {
       for(; i < argc; i++)
       {
-        UniqueMessageData* data = unique_message_data_new();
+        UniqueMessageData *data = unique_message_data_new();
         unique_message_data_set_text(data, argv[i], strlen(argv[i]));
 
         unique_app_send_message(application, 1, data);
