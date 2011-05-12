@@ -1181,7 +1181,7 @@ new_window(char* uri)
 void
 out_of_memory()
 {
-  printf("error: out of memory\n");
+  fprintf(stderr, "error: out of memory.\n");
   exit(-1);
 }
 
@@ -4520,6 +4520,9 @@ int main(int argc, char* argv[])
           Jumanji.UI.embed = atoi(argv[i]);
           Jumanji.UI.winid = argv[i];
         }
+        break;
+      default:
+        fprintf(stderr, "Unknown option '%c'.\n", argv[i][1]);
         break;
     }
   }
