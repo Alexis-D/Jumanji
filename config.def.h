@@ -197,10 +197,8 @@ Command commands[] = {
 /* buffer commands */
 BufferCommand buffer_commands[] = {
   /* regex,        function,               argument             argument data */
-  {"^gb$",         bcmd_back_or_forward,   { BACKWARD,          NULL } },
-  {"^[0-9]+gb$",   bcmd_back_or_forward,   { BACKWARD,          NULL } },
-  {"^gf$",         bcmd_back_or_forward,   { FORWARD,           NULL } },
-  {"^[0-9]+gf$",   bcmd_back_or_forward,   { FORWARD,           NULL } },
+  {"^[0-9]*gb$",   bcmd_back_or_forward,   { BACKWARD,          NULL } },
+  {"^[0-9]*gf$",   bcmd_back_or_forward,   { FORWARD,           NULL } },
   {"^gh$",         bcmd_go_home,           { 0,                 NULL } },
   {"^gH$",         bcmd_go_home,           { NEW_TAB,           NULL } },
   {"^[0-9]*gu$",   bcmd_go_parent,         { 0,                 NULL } },

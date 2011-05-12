@@ -377,6 +377,7 @@ void init_jumanji();
 void init_keylist();
 void init_settings();
 void init_ui();
+int kp_convert(int);
 void load_all_scripts();
 void notify(int, char*);
 void new_window(char*);
@@ -1080,6 +1081,37 @@ void init_ui()
   gtk_box_pack_end(  Jumanji.UI.box, GTK_WIDGET(Jumanji.UI.inputbar),  FALSE, FALSE, 0);
 
   Jumanji.Global.init_ui = TRUE;
+}
+
+/* convert all the number to keypad to their equivalent:
+ * e.g. : GDK_KEY_KP_0 -> GDK_KEY_0*/
+int
+kp_convert(int keyval)
+{
+  switch(keyval) {
+    case GDK_KP_0:
+      return GDK_0;
+    case GDK_KP_1:
+      return GDK_1;
+    case GDK_KP_2:
+      return GDK_2;
+    case GDK_KP_3:
+      return GDK_3;
+    case GDK_KP_4:
+      return GDK_4;
+    case GDK_KP_5:
+      return GDK_5;
+    case GDK_KP_6:
+      return GDK_6;
+    case GDK_KP_7:
+      return GDK_7;
+    case GDK_KP_8:
+      return GDK_8;
+    case GDK_KP_9:
+      return GDK_9;
+    default:
+      return keyval;
+  }
 }
 
 void notify(int level, char* message)
@@ -3637,14 +3669,14 @@ bcmd_back_or_forward(char* buffer, Argument* argument)
 {
   size_t len = strlen(buffer);
 
-  if(len == 0)
+  if(len == 2)
     if(argument->n == BACKWARD)
       cmd_back(0, NULL);
     else
       cmd_forward(0, NULL);
 
   else {
-    int steps = atoi(g_strndup(buffer, strlen(buffer) - 1));
+    int steps = atoi(g_strndup(buffer, strlen(buffer) - 2));
     webkit_web_view_go_back_or_forward(GET_CURRENT_TAB(), argument->n == BACKWARD ? -steps : steps);
   }
 }
@@ -4168,6 +4200,8 @@ cb_tab_kb_pressed(GtkWidget* UNUSED(widget), GdkEventKey* event, gpointer UNUSED
       change_mode(NORMAL);
       return TRUE;
   }
+
+  keyval = kp_convert(keyval);
 
   /* append only numbers and characters to buffer */
   if(isascii(keyval))
