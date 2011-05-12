@@ -1213,14 +1213,10 @@ new_window(char* uri)
     uri = " ";
   }
 
-  char* nargv[6];
+  char* nargv[3];
   if(Jumanji.UI.embed)
   {
-    nargv[0] = *(Jumanji.Global.arguments);
-    nargv[1] = "-e";
-    nargv[2] = Jumanji.UI.winid;
-    nargv[3] = uri;
-    nargv[4] = NULL;
+    create_tab(uri, FALSE);
   }
   else
   {
