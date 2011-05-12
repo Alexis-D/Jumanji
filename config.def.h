@@ -315,6 +315,7 @@ FunctionName function_names[] = {
   {"script",            sc_run_script,         NULL},
   {"scroll",            sc_scroll,             bcmd_scroll},
   {"search",            sc_search,             NULL},
+  {"stop",              sc_stop,               NULL},
   {"toggle_statusbar",  sc_toggle_statusbar,   NULL},
   {"toggle_sourcecode", sc_toggle_sourcecode,  NULL},
   {"quit",              sc_quit,               bcmd_quit},
