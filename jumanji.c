@@ -556,23 +556,12 @@ add_marker(int id)
 /* concatenate argv to a gchar*, replace ~ by getenv("HOME") if needed.
  * The result string should be g_free()'d*/
 gchar* argv_to_uri(int UNUSED(argc), char** argv) {                                                                                                                         
-  gchar* uri = g_strjoinv(" ", argv);
+  gchar *uri = g_strjoinv(" ", argv);
 
   if(uri[0] == '~') {
-    gchar *home = getenv("HOME");
-
-    /* if uri == "~" */
-    if(uri[1] == '\0')
-    {
-      g_free(uri);
-      uri = g_strdup(home);
-    }
-    else
-    {
-      gchar *cpy = uri;
-      uri = g_strconcat(home, uri + 1, NULL);
-      g_free(cpy);
-    }
+    gchar *cpy = uri;
+    uri = g_build_filename(g_get_home_dir(), uri + 1, NULL);
+    g_free(cpy);
   }
 
   return uri;
