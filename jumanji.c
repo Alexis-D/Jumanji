@@ -1217,6 +1217,7 @@ new_window(char* uri)
   if(Jumanji.UI.embed)
   {
     create_tab(uri, FALSE);
+    return;
   }
   else
   {
