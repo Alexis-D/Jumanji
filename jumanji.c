@@ -366,6 +366,7 @@ struct
 
 /* function declarations */
 void add_marker(int);
+gchar* argv_to_uri(int, char**);
 gboolean auto_save(gpointer);
 void change_mode(int);
 void close_tab(int);
@@ -550,6 +551,31 @@ add_marker(int id)
   marker->zoom_level  = zl;
 
   Jumanji.Global.markers = g_list_append(Jumanji.Global.markers, marker);
+}
+
+/* concatenate argv to a gchar*, replace ~ by getenv("HOME") if needed.
+ * The result string should be g_free()'d*/
+gchar* argv_to_uri(int UNUSED(argc), char** argv) {                                                                                                                         
+  gchar* uri = g_strjoinv(" ", argv);
+
+  if(uri[0] == '~') {
+    gchar *home = getenv("HOME");
+
+    /* if uri == "~" */
+    if(uri[1] == '\0')
+    {
+      g_free(uri);
+      uri = g_strdup(home);
+    }
+    else
+    {
+      gchar *cpy = uri;
+      uri = g_strconcat(home, uri + 1, NULL);
+      g_free(cpy);
+    }
+  }
+
+  return uri;
 }
 
 gboolean
@@ -1191,6 +1217,11 @@ new_window(char* uri)
 {
   if(!uri)
     return;
+
+  /* workaround, crash if uri == "" */                                                                                                                                     
+  if(!strcmp(uri, "")) {
+    uri = " ";
+  }
 
   char* nargv[6];
   if(Jumanji.UI.embed)
@@ -3048,8 +3079,7 @@ cmd_open(int argc, char** argv)
   if(argv[argc] != NULL)
     return TRUE;
 
-  char* uri = g_strjoinv(" ", argv);
-
+  gchar *uri = argv_to_uri(argc, argv);
   open_uri(GET_CURRENT_TAB(), uri);
   g_free(uri);
 
@@ -3404,20 +3434,9 @@ cmd_tabopen(int argc, char** argv)
   if(argc <= 0)
     return TRUE;
 
-  int i;
-  GString *uri = g_string_new("");
-
-  for(i = 0; i < argc; i++)
-  {
-    if(i != 0)
-      uri = g_string_append_c(uri, ' ');
-
-    uri = g_string_append(uri, argv[i]);
-  }
-
-  create_tab(uri->str, FALSE);
-
-  g_string_free(uri, FALSE);
+  gchar *uri = argv_to_uri(argc, argv);
+  create_tab(uri, FALSE);
+  g_free(uri);
 
   return TRUE;
 }
@@ -3428,20 +3447,9 @@ cmd_winopen(int argc, char** argv)
   if(argc <= 0)
     return TRUE;
 
-  int i;
-  GString *uri = g_string_new("");
-
-  for(i = 0; i < argc; i++)
-  {
-    if(i != 0)
-      uri = g_string_append_c(uri, ' ');
-
-    uri = g_string_append(uri, argv[i]);
-  }
-
-  new_window(uri->str);
-
-  g_string_free(uri, FALSE);
+  gchar *uri = argv_to_uri(argc, argv);
+  new_window(uri);
+  g_free(uri);
 
   return TRUE;
 }
