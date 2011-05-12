@@ -75,6 +75,7 @@ Shortcut shortcuts[] = {
   /* mask,             key,               function,             mode,         argument              argument data */
   {GDK_CONTROL_MASK,   GDK_c,             sc_abort,             ALL,          { 0,                  NULL } },
   {0,                  GDK_Escape,        sc_abort,             ALL,          { 0,                  NULL } },
+  {GDK_CONTROL_MASK,   GDK_twosuperior,   sc_abort,             ALL,          { 0,                  NULL } },
   {0,                  GDK_BackSpace,     sc_change_buffer,     ALL,          { DELETE_LAST_CHAR,   NULL } },
   {0,                  GDK_m,             sc_change_mode,       NORMAL,       { ADD_MARKER,         NULL } },
   {0,                  GDK_apostrophe,    sc_change_mode,       NORMAL,       { EVAL_MARKER,        NULL } },
@@ -363,6 +364,7 @@ ModeName mode_names[] = {
 
 /* special keys */
 GDKKey gdk_keys[] = {
+  {"<2nd>",       GDK_twosuperior},
   {"<BackSpace>", GDK_BackSpace},
   {"<CapsLock>",  GDK_Caps_Lock},
   {"<Down>",      GDK_Down},
