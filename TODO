@@ -3,3 +3,4 @@
 * Fix bug on :winopen (without url : crash)
 * Handle ~ a start of URIs
 * Allow mapping of ²
+* Pin tabs?
