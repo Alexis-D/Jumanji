@@ -1,5 +1,4 @@
 * Finish shell implementation
-* Refactor tabopen, open, winopen
-* Fix bug on :winopen (without url : crash)
-* Handle ~ a start of URIs
 * Allow mapping of ²
+* Better private mode
+* Pin tab ?
