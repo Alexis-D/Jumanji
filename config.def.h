@@ -140,20 +140,25 @@ Shortcut shortcuts[] = {
 
 /* inputbar shortcuts */
 InputbarShortcut inputbar_shortcuts[] = {
-  /* mask,             key,               function,                  argument             argument data */
-  {0,                  GDK_Escape,        isc_abort,                 { 0,                 NULL } },
-  {GDK_CONTROL_MASK,   GDK_c,             isc_abort,                 { 0,                 NULL } },
-  {0,                  GDK_Up,            isc_command_history,       { PREVIOUS,          NULL } },
-  {0,                  GDK_Down,          isc_command_history,       { NEXT,              NULL } },
-  {0,                  GDK_Tab,           isc_completion,            { NEXT,              NULL } },
-  {GDK_CONTROL_MASK,   GDK_Tab,           isc_completion,            { NEXT_GROUP,        NULL } },
-  {0,                  GDK_ISO_Left_Tab,  isc_completion,            { PREVIOUS,          NULL } },
-  {GDK_CONTROL_MASK,   GDK_ISO_Left_Tab,  isc_completion,            { PREVIOUS_GROUP,    NULL } },
-  {0,                  GDK_BackSpace,     isc_string_manipulation,   { DELETE_LAST_CHAR,  NULL } },
-  {GDK_CONTROL_MASK,   GDK_h,             isc_string_manipulation,   { DELETE_LAST_CHAR,  NULL } },
-  {GDK_CONTROL_MASK,   GDK_w,             isc_string_manipulation,   { DELETE_LAST_WORD,  NULL } },
-  {GDK_CONTROL_MASK,   GDK_f,             isc_string_manipulation,   { NEXT_CHAR,         NULL } },
-  {GDK_CONTROL_MASK,   GDK_b,             isc_string_manipulation,   { PREVIOUS_CHAR,     NULL } },
+  /* mask,             key,               function,                  argument              argument data */
+  {0,                  GDK_Escape,        isc_abort,                 { 0,                  NULL } },
+  {GDK_CONTROL_MASK,   GDK_c,             isc_abort,                 { 0,                  NULL } },
+  {0,                  GDK_Up,            isc_command_history,       { PREVIOUS,           NULL } },
+  {0,                  GDK_Down,          isc_command_history,       { NEXT,               NULL } },
+  {0,                  GDK_Tab,           isc_completion,            { NEXT,               NULL } },
+  {GDK_CONTROL_MASK,   GDK_Tab,           isc_completion,            { NEXT_GROUP,         NULL } },
+  {0,                  GDK_ISO_Left_Tab,  isc_completion,            { PREVIOUS,           NULL } },
+  {GDK_CONTROL_MASK,   GDK_ISO_Left_Tab,  isc_completion,            { PREVIOUS_GROUP,     NULL } },
+  {0,                  GDK_BackSpace,     isc_string_manipulation,   { DELETE_LAST_CHAR,   NULL } },
+  {GDK_CONTROL_MASK,   GDK_h,             isc_string_manipulation,   { DELETE_LAST_CHAR,   NULL } },
+  {GDK_CONTROL_MASK,   GDK_d,             isc_string_manipulation,   { DELETE_NEXT_CHAR,   NULL } },
+  {GDK_CONTROL_MASK,   GDK_w,             isc_string_manipulation,   { DELETE_LAST_WORD,   NULL } },
+  {GDK_CONTROL_MASK,   GDK_f,             isc_string_manipulation,   { NEXT_CHAR,          NULL } },
+  {GDK_CONTROL_MASK,   GDK_b,             isc_string_manipulation,   { PREVIOUS_CHAR,      NULL } },
+  {GDK_CONTROL_MASK,   GDK_u,             isc_string_manipulation,   { DELETE_LINE_START,  NULL } },
+  {GDK_CONTROL_MASK,   GDK_k,             isc_string_manipulation,   { DELETE_LINE_END,    NULL } },
+  {GDK_CONTROL_MASK,   GDK_a,             isc_string_manipulation,   { GOTO_START,         NULL } },
+  {GDK_CONTROL_MASK,   GDK_e,             isc_string_manipulation,   { GOTO_END,           NULL } },
 };
 
 /* mouse buttons */

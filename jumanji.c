@@ -47,11 +47,16 @@ enum {
   DEFAULT,
   DELETE_LAST_CHAR,
   DELETE_LAST_WORD,
+  DELETE_LINE_START,
+  DELETE_LINE_END,
+  DELETE_NEXT_CHAR,
   DOWN,
   ERROR,
   FORWARD,
   FULL_DOWN,
   FULL_UP,
+  GOTO_START,
+  GOTO_END,
   HALF_DOWN,
   HALF_UP,
   HIDE,
@@ -2638,13 +2643,25 @@ isc_string_manipulation(Argument* argument)
     gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar),  i+1, pos);
     gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), i+1);
   }
-  else if(argument->n == DELETE_LAST_CHAR)
+  else if(argument->n == DELETE_LAST_CHAR || argument->n == DELETE_NEXT_CHAR)
   {
     if((length - 1) <= 0)
       isc_abort(NULL);
 
-    gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar), pos - 1, pos);
+    gboolean last = argument->n == DELETE_LAST_CHAR;
+
+    gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar),
+                             last ? pos - 1 : pos, last ? pos : pos + 1);
   }
+  else if(argument->n == DELETE_LINE_START)
+    /* start to 1 to keep ':' */
+    gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar), 1, pos);
+  else if(argument->n == DELETE_LINE_END)
+    gtk_editable_delete_text(GTK_EDITABLE(Jumanji.UI.inputbar), pos, length);
+  else if(argument->n == GOTO_START)
+    gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), 1);
+  else if(argument->n == GOTO_END)
+    gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), -1);
   else if(argument->n == NEXT_CHAR)
     gtk_editable_set_position(GTK_EDITABLE(Jumanji.UI.inputbar), pos+1);
   else if(argument->n == PREVIOUS_CHAR)
