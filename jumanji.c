@@ -454,6 +454,7 @@ gboolean cmd_sessionload(int, char**);
 gboolean cmd_sessionsave(int, char**);
 gboolean cmd_sessionswitch(int, char**);
 gboolean cmd_set(int, char**);
+gboolean cmd_shell(int, char**);
 gboolean cmd_stop(int, char**);
 gboolean cmd_tabopen(int, char**);
 gboolean cmd_winopen(int, char**);
@@ -3362,6 +3363,22 @@ cmd_set(int argc, char** argv)
 
   update_status();
   return TRUE;
+}
+
+gboolean
+cmd_shell(int UNUSED(argc), char** argv) {
+    GString  *command = g_string_new(shell_command);
+    gchar *cliargs = g_strjoinv(" ", argv);
+
+    g_string_append(command, " \"");
+    g_string_append(command, cliargs);
+    g_string_append_c(command, '"');
+
+    g_spawn_command_line_async(command->str, NULL);
+
+    g_string_free(command, TRUE);
+    g_free(cliargs);
+    return TRUE;
 }
 
 gboolean

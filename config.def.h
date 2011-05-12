@@ -35,6 +35,9 @@ char* download_dir     = "~/dl/";
 char* download_command = "xterm -e sh -c \"wget --load-cookies ~/.config/jumanji/cookies '%s' -O '%s'\"";
 char* spawn_editor = "xterm -e -sh -c \"vim %s\"";
 
+/* shell settings */
+char* shell_command = "sh -c";
+
 /* look */
 char* font                   = "monospace normal 9";
 char* default_bgcolor        = "#000000";
@@ -170,10 +173,10 @@ Mouse mouse[] = {
 /* commands */
 Command commands[] = {
   /* command,   abbreviation,   function,            completion,   description  */
-  {"back",      0,              cmd_back,            0,            "Go back in the browser history" },
+  {"back",      "ba",           cmd_back,            0,            "Go back in the browser history" },
   {"bmap",      0,              cmd_bmap,            0,            "Map a buffered command" },
   {"bmark",     "b",            cmd_bookmark,        0,            "Add a bookmark" },
-  {"forward",   "f",            cmd_forward,         0,            "Go forward in the browser history" },
+  {"forward",   "fo",           cmd_forward,         0,            "Go forward in the browser history" },
   {"map",       "m",            cmd_map,             0,            "Map a key sequence" },
   {"open",      "o",            cmd_open,            cc_open,      "Open URI in the current tab" },
   {"plugin",    0,              cmd_plugintype,      0,            "Allow plugin type" },
@@ -188,6 +191,7 @@ Command commands[] = {
   {"sessionsave","ssa",         cmd_sessionsave,     cc_session,   "Save session with specified name" },
   {"sessionswitch","ssw",       cmd_sessionswitch,   cc_session,   "Close all the current tabs and load session" },
   {"set",       "s",            cmd_set,             cc_set,       "Set an option" },
+  {"shell",     "!",            cmd_shell,           0,            "Execute a shell command" },
   {"stop",      "st",           cmd_stop,            0,            "Stop loading the current page" },
   {"tabopen",   "t",            cmd_tabopen,         cc_open,      "Open URI in a new tab" },
   {"winopen",   "w",            cmd_winopen,         cc_open,      "Open URI in a new window" },
