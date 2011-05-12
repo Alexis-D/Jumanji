@@ -1,3 +1,4 @@
+/* vim: set ts=2:sw=2 */ 
 /* See LICENSE file for license and copyright information */
 
 #define _BSD_SOURCE
@@ -4646,3 +4647,4 @@ int main(int argc, char* argv[])
 
   return 0;
 }
+

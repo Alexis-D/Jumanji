@@ -1,3 +1,4 @@
+/* vim: set ts=2:sw=2 */ 
 /* settings */
 int   default_width      = 800;
 int   default_height     = 600;
