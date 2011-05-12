@@ -556,7 +556,8 @@ add_marker(int id)
 
 /* concatenate argv to a gchar*, replace ~ by getenv("HOME") if needed.
  * The result string should be g_free()'d*/
-gchar* argv_to_uri(int UNUSED(argc), char** argv) {                                                                                                                         
+gchar*
+argv_to_uri(int UNUSED(argc), char **argv) {
   gchar *uri = g_strjoinv(" ", argv);
 
   if(uri[0] == '~') {
@@ -1208,7 +1209,7 @@ new_window(char *uri)
   if(!uri)
     return;
 
-  /* workaround, crash if uri == "" */                                                                                                                                     
+  /* workaround, crash if uri == "" */
   if(!strcmp(uri, "")) {
     uri = " ";
   }
@@ -1972,7 +1973,7 @@ sc_follow_link(Argument *argument)
   if (argument && argument->n == 10)
     cmd = g_strdup("get_active()");
   else if (key && key->keyval == GDK_Tab) {
-    if ( key->state & GDK_CONTROL_MASK)
+    if (key->state & GDK_COSHIFT_MASK)
       cmd = g_strdup("focus_prev()");
     else
       cmd = g_strdup("focus_next()");
