@@ -3367,7 +3367,18 @@ cmd_set(int argc, char** argv)
 
 gboolean
 cmd_shell(int UNUSED(argc), char** argv) {
-  return FALSE; 
+    GString  *command = g_string_new(shell_command);
+    gchar *cliargs = g_strjoinv(" ", argv);
+
+    g_string_append(command, " \"");
+    g_string_append(command, cliargs);
+    g_string_append_c(command, '"');
+
+    g_spawn_command_line_async(command->str, NULL);
+
+    g_string_free(command, TRUE);
+    g_free(cliargs);
+    return TRUE;
 }
 
 gboolean
