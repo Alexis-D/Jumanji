@@ -1,4 +1,4 @@
-/* vim: set ts=2:sw=2 */ 
+/* vim: set ts=2:sw=2: */ 
 /* See LICENSE file for license and copyright information */
 
 #define _BSD_SOURCE
@@ -385,9 +385,11 @@ void notify(int, char*);
 void new_window(char*);
 void out_of_memory();
 void open_uri(WebKitWebView*, char*);
+void private_cookies(gboolean);
 void read_configuration();
 char* read_file(const char*);
 char* reference_to_string(JSContextRef, JSValueRef);
+void remove_private_cookies();
 void run_script(char*, char**, char**);
 gboolean search_and_highlight(Argument*);
 gboolean sessionload(char*);
@@ -881,12 +883,7 @@ init_data()
 
   g_free(sessions_file);
 
-  /* load cookies */
-  char *cookie_file        = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_COOKIES, NULL);
-  SoupCookieJar *cookiejar = soup_cookie_jar_text_new(cookie_file, FALSE);
-
-  soup_session_add_feature(Jumanji.Soup.session, (SoupSessionFeature*) cookiejar);
-  g_free(cookie_file);
+  private_cookies(!private_browsing);
 }
 
 void
@@ -1526,6 +1523,21 @@ update_position()
 }
 
 void
+private_cookies(gboolean enable)
+{
+  char *cookie_file        = g_build_filename(g_get_home_dir(), JUMANJI_DIR, enable ? JUMANJI_COOKIES_PRIVATE : JUMANJI_COOKIES, NULL);
+  SoupCookieJar *cookiejar = soup_cookie_jar_text_new(cookie_file, FALSE);
+
+  soup_session_add_feature(Jumanji.Soup.session, (SoupSessionFeature*) cookiejar);
+  g_free(cookie_file);
+
+  if(!enable)
+  {
+    remove_private_cookies();
+  }
+}
+
+void
 read_configuration()
 {
   char *jumanjirc = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_RC, NULL);
@@ -1625,6 +1637,17 @@ reference_to_string(JSContextRef context, JSValueRef reference)
   JSStringRelease(ref_st);
 
   return string;
+}
+
+void
+remove_private_cookies()
+{
+  char *private_cookies = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_COOKIES_PRIVATE, NULL);
+
+  fprintf(stderr, "Delete private");
+  remove(private_cookies);
+
+  g_free(private_cookies);
 }
 
 void
@@ -3287,6 +3310,19 @@ cmd_set(int argc, char **argv)
             value = TRUE;
         }
 
+        if(!strcmp("private_browsing", settings[i].name))
+        {
+          char *nargv[3];
+
+          nargv[0] = Jumanji.Global.arguments[0];
+          /* -p : private */
+          nargv[1] = value ? "-p" : NULL;
+          nargv[2] = NULL;
+
+          g_spawn_sync(NULL, nargv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
+          cmd_quitall(0, NULL);
+        }
+
         if(settings[i].variable)
         {
           gboolean *x = (gboolean*) (settings[i].variable);
@@ -3980,6 +4016,9 @@ cb_destroy(GtkWidget *UNUSED(widget), gpointer UNUSED(data))
 {
   pango_font_description_free(Jumanji.Style.font);
 
+  /* delete private cookies */
+  remove_private_cookies();
+
   /* write bookmarks and history */
   cmd_write(0, NULL);
 
@@ -4588,6 +4627,9 @@ int main(int argc, char *argv[])
           Jumanji.UI.embed = atoi(argv[i]);
           Jumanji.UI.winid = argv[i];
         }
+        break;
+      case 'p':
+        private_browsing = FALSE;
         break;
       default:
         fprintf(stderr, "Unknown option '%c'.\n", argv[i][1]);
