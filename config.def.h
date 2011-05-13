@@ -185,7 +185,7 @@ Command commands[] = {
   {"plugin",    0,              cmd_plugintype,      0,            "Allow plugin type" },
   {"print",     0,              cmd_print,           0,            "Print page" },
   {"quit",      "q",            cmd_quit,            0,            "Quit current tab" },
-  {"quitall",   0,              cmd_quitall,         0,            "Quit jumanji" },
+  {"quitall",   "qa",           cmd_quitall,         0,            "Quit jumanji" },
   {"reload",    0,              cmd_reload,          0,            "Reload the current web page" },
   {"reloadall", 0,              cmd_reload_all,      0,            "Reload all tab pages" },
   {"saveas",    0,              cmd_saveas,          0,            "Save current document to disk" },
