@@ -5,4 +5,5 @@
                        - save cookies to another file (easy)
                        - prevent webkit to reload, navigate in the history (how ?)
                        - reload everything (not so easy : how to launch a new jumanji instance and destroy the current one when we are in single instance mode?)
+                       - maybe the two previous points are useless : webkitwebsettingsprivate 
 
