@@ -1922,7 +1922,10 @@ sc_focus_inputbar(Argument *argument)
     char *data = argument->data;
 
     if(argument->n == APPEND_URL)
-      data = g_strdup_printf("%s%s", data, webkit_web_view_get_uri(GET_CURRENT_TAB()));
+    {
+      const gchar *uri = webkit_web_view_get_uri(GET_CURRENT_TAB());
+      data = g_strdup_printf("%s%s", data, uri ? uri : "");
+    }
     else
       data = g_strdup(data);
 
