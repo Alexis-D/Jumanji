@@ -1,5 +1,6 @@
 * Improve isc_command_history (up/down command should have the same prefix)
 * Pin tab ?
+* Search for the current selected word with * and #
 * Better private mode, not so easy:
                        - save cookies to another file (easy)
                        - prevent webkit to reload, navigate in the history (how ?)
