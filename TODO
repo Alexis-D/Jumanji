@@ -1,6 +1,3 @@
-* Finish shell implementation
-* Refactor tabopen, open, winopen
-* Fix bug on :winopen (without url : crash)
-* Handle ~ a start of URIs
-* Allow mapping of ²
-* Pin tabs?
+* Better private mode
+* Improve isc_command_history (up/down command should have the same prefix)
+* Pin tab ?

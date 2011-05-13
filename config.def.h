@@ -1,3 +1,4 @@
+/* vim: set ts=2:sw=2 */ 
 /* settings */
 int   default_width      = 800;
 int   default_height     = 600;
@@ -18,51 +19,51 @@ static const char JUMANJI_COOKIES[]   = "cookies";
 static const char JUMANJI_SESSIONS[]  = "sessions";
 
 /* browser specific settings */
-char* user_agent           = NULL;
-char* browser_name         = "jumanji/0.0";
-char* home_page            = "http://pwmt.org";
-char* proxy                = NULL;
+char *user_agent           = NULL;
+char *browser_name         = "jumanji/0.0";
+char *home_page            = "http://pwmt.org";
+char *proxy                = NULL;
 gboolean private_browsing  = FALSE;
 gboolean plugin_blocker    = TRUE;
 gboolean full_content_zoom = FALSE;
-char* default_session_name = NULL;
+char *default_session_name = NULL;
 int auto_save_interval     = 0;
 int search_delay           = 400; /* in millisecond */
 int history_limit          = 0;
 
 /* download settings */
-char* download_dir     = "~/dl/";
-char* download_command = "xterm -e sh -c \"wget --load-cookies ~/.config/jumanji/cookies '%s' -O '%s'\"";
-char* spawn_editor = "xterm -e -sh -c \"vim %s\"";
+char *download_dir     = "~/dl/";
+char *download_command = "xterm -e sh -c \"wget --load-cookies ~/.config/jumanji/cookies '%s' -O '%s'\"";
+char *spawn_editor = "xterm -e -sh -c \"vim %s\"";
 
 /* shell settings */
 char* shell_command = "sh -c";
 
 /* look */
-char* font                   = "monospace normal 9";
-char* default_bgcolor        = "#000000";
-char* default_fgcolor        = "#DDDDDD";
-char* inputbar_bgcolor       = "#141414";
-char* inputbar_fgcolor       = "#9FBC00";
-char* statusbar_bgcolor      = "#000000";
-char* statusbar_fgcolor      = "#FFFFFF";
-char* statusbar_ssl_bgcolor  = "#9FBC00";
-char* statusbar_ssl_fgcolor  = "#000000";
-char* tabbar_bgcolor         = "#000000";
-char* tabbar_fgcolor         = "#FFFFFF";
-char* tabbar_focus_bgcolor   = "#000000";
-char* tabbar_focus_fgcolor   = "#9FBC00";
-char* tabbar_separator_color = "#575757";
-char* completion_fgcolor     = "#DDDDDD";
-char* completion_bgcolor     = "#232323";
-char* completion_g_fgcolor   = "#DEDEDE";
-char* completion_g_bgcolor   = "#000000";
-char* completion_hl_fgcolor  = "#232323";
-char* completion_hl_bgcolor  = "#9FBC00";
-char* notification_e_bgcolor = "#FF1212";
-char* notification_e_fgcolor = "#FFFFFF";
-char* notification_w_bgcolor = "#FFF712";
-char* notification_w_fgcolor = "#000000";
+char *font                   = "monospace normal 9";
+char *default_bgcolor        = "#000000";
+char *default_fgcolor        = "#DDDDDD";
+char *inputbar_bgcolor       = "#141414";
+char *inputbar_fgcolor       = "#9FBC00";
+char *statusbar_bgcolor      = "#000000";
+char *statusbar_fgcolor      = "#FFFFFF";
+char *statusbar_ssl_bgcolor  = "#9FBC00";
+char *statusbar_ssl_fgcolor  = "#000000";
+char *tabbar_bgcolor         = "#000000";
+char *tabbar_fgcolor         = "#FFFFFF";
+char *tabbar_focus_bgcolor   = "#000000";
+char *tabbar_focus_fgcolor   = "#9FBC00";
+char *tabbar_separator_color = "#575757";
+char *completion_fgcolor     = "#DDDDDD";
+char *completion_bgcolor     = "#232323";
+char *completion_g_fgcolor   = "#DEDEDE";
+char *completion_g_bgcolor   = "#000000";
+char *completion_hl_fgcolor  = "#232323";
+char *completion_hl_bgcolor  = "#9FBC00";
+char *notification_e_bgcolor = "#FF1212";
+char *notification_e_fgcolor = "#FFFFFF";
+char *notification_w_bgcolor = "#FFF712";
+char *notification_w_fgcolor = "#000000";
 
 /* additional settings */
 gboolean show_scrollbars = FALSE;
@@ -202,6 +203,8 @@ Command commands[] = {
 /* buffer commands */
 BufferCommand buffer_commands[] = {
   /* regex,        function,               argument             argument data */
+  {"^[0-9]*gb$",   bcmd_back_or_forward,   { BACKWARD,          NULL } },
+  {"^[0-9]*gf$",   bcmd_back_or_forward,   { FORWARD,           NULL } },
   {"^gh$",         bcmd_go_home,           { 0,                 NULL } },
   {"^gH$",         bcmd_go_home,           { NEW_TAB,           NULL } },
   {"^[0-9]*gu$",   bcmd_go_parent,         { 0,                 NULL } },
@@ -217,6 +220,7 @@ BufferCommand buffer_commands[] = {
   {"^[0-9]+G$",    bcmd_scroll,            { 0,                 NULL } },
   {"^gg$",         bcmd_scroll,            { TOP,               NULL } },
   {"^G$",          bcmd_scroll,            { BOTTOM,            NULL } },
+  {"^c$",          bcmd_stop,              { BOTTOM,            NULL } },
   {"^gf$",         bcmd_toggle_sourcecode, { 0,                 NULL } },
   {"^gF$",         bcmd_toggle_sourcecode, { OPEN_EXTERNAL,     NULL } },
   {"^zI$",         bcmd_zoom,              { ZOOM_IN,           NULL } },
@@ -325,7 +329,6 @@ FunctionName function_names[] = {
   {"script",            sc_run_script,         NULL},
   {"scroll",            sc_scroll,             bcmd_scroll},
   {"search",            sc_search,             NULL},
-  {"stop",              sc_stop,               NULL},
   {"toggle_statusbar",  sc_toggle_statusbar,   NULL},
   {"toggle_sourcecode", sc_toggle_sourcecode,  NULL},
   {"quit",              sc_quit,               bcmd_quit},
