@@ -1,4 +1,6 @@
-/* vim: set ts=2:sw=2: */ 
+/*
+ * vim: tabstop=2 shiftwidth=2
+ */ 
 /* See LICENSE file for license and copyright information */
 
 #define _BSD_SOURCE
@@ -385,7 +387,7 @@ void notify(int, char*);
 void new_window(char*);
 void out_of_memory();
 void open_uri(WebKitWebView*, char*);
-void private_cookies(gboolean);
+void private_browse(gboolean);
 void read_configuration();
 char* read_file(const char*);
 char* reference_to_string(JSContextRef, JSValueRef);
@@ -423,6 +425,7 @@ void sc_reopen(Argument*);
 void sc_run_script(Argument*);
 void sc_scroll(Argument*);
 void sc_search(Argument*);
+void sc_search_selected(Argument*);
 void sc_spawn(Argument*);
 void sc_toggle_proxy(Argument*);
 void sc_toggle_statusbar(Argument*);
@@ -883,7 +886,7 @@ init_data()
 
   g_free(sessions_file);
 
-  private_cookies(!private_browsing);
+  private_browse(private_browsing);
 }
 
 void
@@ -1523,18 +1526,34 @@ update_position()
 }
 
 void
-private_cookies(gboolean enable)
+private_browse(gboolean enable)
 {
-  char *cookie_file        = g_build_filename(g_get_home_dir(), JUMANJI_DIR, enable ? JUMANJI_COOKIES_PRIVATE : JUMANJI_COOKIES, NULL);
-  SoupCookieJar *cookiejar = soup_cookie_jar_text_new(cookie_file, FALSE);
+  char *cookie_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, enable ? JUMANJI_COOKIES_PRIVATE : JUMANJI_COOKIES, NULL);
+  char *private_cookie_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, enable ? JUMANJI_COOKIES_PRIVATE : JUMANJI_COOKIES, NULL);
 
-  soup_session_add_feature(Jumanji.Soup.session, (SoupSessionFeature*) cookiejar);
+  SoupCookieJar *cookiejar = soup_cookie_jar_text_new(cookie_file, FALSE);
+  SoupCookieJar *private_cookiejar = soup_cookie_jar_text_new(private_cookie_file, FALSE);
+
+  soup_session_remove_feature(Jumanji.Soup.session, (SoupSessionFeature*)(enable ? cookiejar : private_cookiejar));
+  soup_session_add_feature(Jumanji.Soup.session, (SoupSessionFeature*)(enable ? private_cookiejar : cookiejar));
+
   g_free(cookie_file);
+  g_free(private_cookie_file);
 
   if(!enable)
   {
+    fprintf(stderr, "remove private\n");
     remove_private_cookies();
   }
+
+  fprintf(stderr, "private browing %s\n", enable ? "enabled" : "disabled");
+  
+  int number_of_tabs = gtk_notebook_get_n_pages(Jumanji.UI.view);
+  g_object_set(G_OBJECT(Jumanji.Global.browser_settings), "enable-private-browsing", enable, NULL);
+
+  fprintf(stderr, "%d tabs\n", number_of_tabs);
+
+  for(int i = 0; i < number_of_tabs; close_tab(i++));
 }
 
 void
@@ -2116,6 +2135,13 @@ void
 sc_search(Argument *argument)
 {
   search_and_highlight(argument);
+}
+
+void
+sc_search_selected(Argument *argument)
+{
+//search_item = ...;
+//return search_and_highlight(argument);
 }
 
 gboolean
@@ -3308,6 +3334,11 @@ cmd_set(int argc, char **argv)
           else
             value = TRUE;
         }
+        if(!strcmp("private_browsing", settings[i].name))
+        {
+
+          private_browse(value);
+        }
 
         if(settings[i].variable)
         {
@@ -4001,9 +4032,6 @@ gboolean
 cb_destroy(GtkWidget *UNUSED(widget), gpointer UNUSED(data))
 {
   pango_font_description_free(Jumanji.Style.font);
-
-  /* delete private cookies */
-  remove_private_cookies();
 
   /* write bookmarks and history */
   cmd_write(0, NULL);
