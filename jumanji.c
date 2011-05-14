@@ -387,11 +387,9 @@ void notify(int, char*);
 void new_window(char*);
 void out_of_memory();
 void open_uri(WebKitWebView*, char*);
-void private_browse(gboolean);
 void read_configuration();
 char* read_file(const char*);
 char* reference_to_string(JSContextRef, JSValueRef);
-void remove_private_cookies();
 void run_script(char*, char**, char**);
 gboolean search_and_highlight(Argument*);
 gboolean sessionload(char*);
@@ -886,7 +884,10 @@ init_data()
 
   g_free(sessions_file);
 
-  private_browse(private_browsing);
+  char *cookie_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_COOKIES, NULL);
+  SoupCookieJar *cookiejar = soup_cookie_jar_text_new(cookie_file, FALSE);
+  soup_session_add_feature(Jumanji.Soup.session, (SoupSessionFeature*) cookiejar);
+  g_free(cookie_file);
 }
 
 void
@@ -1526,37 +1527,6 @@ update_position()
 }
 
 void
-private_browse(gboolean enable)
-{
-  char *cookie_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, enable ? JUMANJI_COOKIES_PRIVATE : JUMANJI_COOKIES, NULL);
-  char *private_cookie_file = g_build_filename(g_get_home_dir(), JUMANJI_DIR, enable ? JUMANJI_COOKIES_PRIVATE : JUMANJI_COOKIES, NULL);
-
-  SoupCookieJar *cookiejar = soup_cookie_jar_text_new(cookie_file, FALSE);
-  SoupCookieJar *private_cookiejar = soup_cookie_jar_text_new(private_cookie_file, FALSE);
-
-  soup_session_remove_feature(Jumanji.Soup.session, (SoupSessionFeature*)(enable ? cookiejar : private_cookiejar));
-  soup_session_add_feature(Jumanji.Soup.session, (SoupSessionFeature*)(enable ? private_cookiejar : cookiejar));
-
-  g_free(cookie_file);
-  g_free(private_cookie_file);
-
-  if(!enable)
-  {
-    fprintf(stderr, "remove private\n");
-    remove_private_cookies();
-  }
-
-  fprintf(stderr, "private browing %s\n", enable ? "enabled" : "disabled");
-  
-  int number_of_tabs = gtk_notebook_get_n_pages(Jumanji.UI.view);
-  g_object_set(G_OBJECT(Jumanji.Global.browser_settings), "enable-private-browsing", enable, NULL);
-
-  fprintf(stderr, "%d tabs\n", number_of_tabs);
-
-  for(int i = 0; i < number_of_tabs; close_tab(i++));
-}
-
-void
 read_configuration()
 {
   char *jumanjirc = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_RC, NULL);
@@ -1656,16 +1626,6 @@ reference_to_string(JSContextRef context, JSValueRef reference)
   JSStringRelease(ref_st);
 
   return string;
-}
-
-void
-remove_private_cookies()
-{
-  char *private_cookies = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_COOKIES_PRIVATE, NULL);
-
-  remove(private_cookies);
-
-  g_free(private_cookies);
 }
 
 void
@@ -3333,11 +3293,6 @@ cmd_set(int argc, char **argv)
             value = FALSE;
           else
             value = TRUE;
-        }
-        if(!strcmp("private_browsing", settings[i].name))
-        {
-
-          private_browse(value);
         }
 
         if(settings[i].variable)

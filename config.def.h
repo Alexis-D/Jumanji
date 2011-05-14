@@ -13,13 +13,12 @@ static const char FORMAT_COMMAND[]     = "<b>%s</b>";
 static const char FORMAT_DESCRIPTION[] = "<i>%s</i>";
 
 /* directories and files */
-static const char JUMANJI_DIR[]             = ".config/jumanji";
-static const char JUMANJI_RC[]              = "jumanjirc";
-static const char JUMANJI_BOOKMARKS[]       = "bookmarks";
-static const char JUMANJI_HISTORY[]         = "history";
-static const char JUMANJI_COOKIES[]         = "cookies";
-static const char JUMANJI_COOKIES_PRIVATE[] = "cookies-private";
-static const char JUMANJI_SESSIONS[]        = "sessions";
+static const char JUMANJI_DIR[]       = ".config/jumanji";
+static const char JUMANJI_RC[]        = "jumanjirc";
+static const char JUMANJI_BOOKMARKS[] = "bookmarks";
+static const char JUMANJI_HISTORY[]   = "history";
+static const char JUMANJI_COOKIES[]   = "cookies";
+static const char JUMANJI_SESSIONS[]  = "sessions";
 
 /* browser specific settings */
 char *user_agent           = NULL;
