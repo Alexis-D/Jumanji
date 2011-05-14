@@ -1644,7 +1644,6 @@ remove_private_cookies()
 {
   char *private_cookies = g_build_filename(g_get_home_dir(), JUMANJI_DIR, JUMANJI_COOKIES_PRIVATE, NULL);
 
-  fprintf(stderr, "Delete private");
   remove(private_cookies);
 
   g_free(private_cookies);
@@ -3310,19 +3309,6 @@ cmd_set(int argc, char **argv)
             value = TRUE;
         }
 
-        if(!strcmp("private_browsing", settings[i].name))
-        {
-          char *nargv[3];
-
-          nargv[0] = Jumanji.Global.arguments[0];
-          /* -p : private */
-          nargv[1] = value ? "-p" : NULL;
-          nargv[2] = NULL;
-
-          g_spawn_sync(NULL, nargv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
-          cmd_quitall(0, NULL);
-        }
-
         if(settings[i].variable)
         {
           gboolean *x = (gboolean*) (settings[i].variable);
@@ -4627,10 +4613,6 @@ int main(int argc, char *argv[])
           Jumanji.UI.embed = atoi(argv[i]);
           Jumanji.UI.winid = argv[i];
         }
-        break;
-      case 'p':
-        private_browsing = FALSE;
-        break;
       default:
         fprintf(stderr, "Unknown option '%c'.\n", argv[i][1]);
         break;
