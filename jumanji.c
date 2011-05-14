@@ -1,4 +1,4 @@
-/* vim: set ts=2:sw=2: */ 
+/* vim: set tabstop=2 shiftwidth=2 */ 
 /* See LICENSE file for license and copyright information */
 
 #define _BSD_SOURCE
@@ -3311,17 +3311,7 @@ cmd_set(int argc, char **argv)
         }
 
         if(!strcmp("private_browsing", settings[i].name))
-        {
-          char *nargv[3];
-
-          nargv[0] = Jumanji.Global.arguments[0];
-          /* -p : private */
-          nargv[1] = value ? "-p" : NULL;
-          nargv[2] = NULL;
-
-          g_spawn_sync(NULL, nargv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
-          cmd_quitall(0, NULL);
-        }
+          g_object_set(G_OBJECT(Jumanji.Global.browser_settings), "enable-private-browsing", value, NULL);
 
         if(settings[i].variable)
         {
