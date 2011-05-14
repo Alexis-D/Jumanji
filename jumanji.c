@@ -1,4 +1,6 @@
-/* vim: set tabstop=2 shiftwidth=2 */ 
+/*
+ * vim: tabstop=2 shiftwidth=2
+ */ 
 /* See LICENSE file for license and copyright information */
 
 #define _BSD_SOURCE
@@ -3289,7 +3291,20 @@ cmd_set(int argc, char **argv)
         }
 
         if(!strcmp("private_browsing", settings[i].name))
+        {
+          fprintf(stderr, "private browing %s\n", value ? "enabled" : "disabled");
+          
+          int number_of_tabs = gtk_notebook_get_current_page(Jumanji.UI.view);
+          int i              = 0;
           g_object_set(G_OBJECT(Jumanji.Global.browser_settings), "enable-private-browsing", value, NULL);
+
+          fprintf(stderr, "%d tabs\n", number_of_tabs);
+
+          for(; i < number_of_tabs; ++i)
+          {
+            webkit_web_view_set_settings(GET_NTH_TAB(i), webkit_web_settings_copy(Jumanji.Global.browser_settings));
+          }
+        }
 
         if(settings[i].variable)
         {
